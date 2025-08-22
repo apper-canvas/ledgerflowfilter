@@ -79,10 +79,10 @@ const NotificationManager = () => {
   const handleMarkAsRead = async (ids) => {
     try {
       const promises = ids.map(id => notificationService.markAsRead(id))
-      await Promise.all(promises)
+await Promise.all(promises)
       
       setNotifications(prev =>
-        prev.map(n => (ids.includes(n.Id) ? { ...n, isRead: true } : n))
+        prev.map(n => (n?.Id && ids.includes(n.Id) ? { ...n, isRead: true } : n))
       )
       
       setSelectedItems([])
@@ -98,11 +98,11 @@ const NotificationManager = () => {
         notificationService.update(id, { isRead: false })
       )
       await Promise.all(promises)
+await Promise.all(promises)
       
       setNotifications(prev =>
-        prev.map(n => (ids.includes(n.Id) ? { ...n, isRead: false } : n))
+        prev.map(n => (n?.Id && ids.includes(n.Id) ? { ...n, isRead: false } : n))
       )
-      
       setSelectedItems([])
       toast.success(`Marked ${ids.length} notification(s) as unread`)
     } catch (error) {
@@ -117,9 +117,9 @@ const NotificationManager = () => {
 
     try {
       const promises = ids.map(id => notificationService.delete(id))
-      await Promise.all(promises)
+await Promise.all(promises)
       
-      setNotifications(prev => prev.filter(n => !ids.includes(n.Id)))
+      setNotifications(prev => prev.filter(n => n?.Id && !ids.includes(n.Id)))
       setSelectedItems([])
       toast.success(`Deleted ${ids.length} notification(s)`)
     } catch (error) {
@@ -184,141 +184,165 @@ const NotificationManager = () => {
     })
   }
 
-  const columns = [
+const columns = [
     {
       key: "selection",
       label: "",
-      render: (notification) => (
-        <input
-          type="checkbox"
-          checked={selectedItems.includes(notification.Id)}
-          onChange={(e) => {
-            if (e.target.checked) {
-              setSelectedItems(prev => [...prev, notification.Id])
-            } else {
-              setSelectedItems(prev => prev.filter(id => id !== notification.Id))
-            }
-          }}
-          className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-        />
-      )
+      render: (_, notification) => {
+        if (!notification?.Id) return null
+        return (
+          <input
+            type="checkbox"
+            checked={selectedItems.includes(notification.Id)}
+            onChange={(e) => {
+              if (e.target.checked) {
+                setSelectedItems(prev => [...prev, notification.Id])
+              } else {
+                setSelectedItems(prev => prev.filter(id => id !== notification.Id))
+              }
+            }}
+            className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+          />
+        )
+      }
     },
-    {
+{
       key: "status",
       label: "Status",
-      render: (notification) => (
-        <div className="flex items-center">
-          {!notification.isRead && (
-            <div className="w-2 h-2 bg-primary-500 rounded-full mr-2" />
-          )}
-          <span className={cn(
-            "text-sm",
-            !notification.isRead ? "font-medium text-gray-900" : "text-gray-600"
-          )}>
-            {notification.isRead ? "Read" : "Unread"}
-          </span>
-        </div>
-      )
+      render: (_, notification) => {
+        if (!notification) return null
+        return (
+          <div className="flex items-center">
+            {!notification.isRead && (
+              <div className="w-2 h-2 bg-primary-500 rounded-full mr-2" />
+            )}
+            <span className={cn(
+              "text-sm",
+              !notification.isRead ? "font-medium text-gray-900" : "text-gray-600"
+            )}>
+              {notification.isRead ? "Read" : "Unread"}
+            </span>
+          </div>
+        )
+      }
     },
-    {
+{
       key: "title",
       label: "Title",
-      render: (notification) => (
-        <div className="flex items-start space-x-3">
-          <div className={cn(
-            "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5",
-            notification.type === "alert" && "bg-red-100",
-            notification.type === "reminder" && "bg-yellow-100",
-            notification.type === "system" && "bg-blue-100",
-            notification.type === "info" && "bg-green-100"
-          )}>
-            <ApperIcon
-              name={getNotificationIcon(notification.type)}
-              className="w-4 h-4 text-gray-600"
-            />
-          </div>
-          
-          <div className="min-w-0 flex-1">
-            <h3 className={cn(
-              "text-sm font-medium",
-              !notification.isRead ? "text-gray-900" : "text-gray-700"
+      render: (_, notification) => {
+        if (!notification) return null
+        return (
+          <div className="flex items-start space-x-3">
+            <div className={cn(
+              "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mt-0.5",
+              notification.type === "alert" && "bg-red-100",
+              notification.type === "reminder" && "bg-yellow-100",
+              notification.type === "system" && "bg-blue-100",
+              notification.type === "info" && "bg-green-100"
             )}>
-              {notification.title}
-            </h3>
-            <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-              {notification.message}
-            </p>
+              <ApperIcon
+                name={getNotificationIcon(notification.type || "info")}
+                className="w-4 h-4 text-gray-600"
+              />
+            </div>
+            
+            <div className="min-w-0 flex-1">
+              <h3 className={cn(
+                "text-sm font-medium",
+                !notification.isRead ? "text-gray-900" : "text-gray-700"
+              )}>
+                {notification.title || 'No title'}
+              </h3>
+              <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                {notification.message || 'No message'}
+              </p>
+            </div>
           </div>
-        </div>
-      )
+        )
+      }
     },
-    {
+{
       key: "type",
       label: "Type",
-      render: (notification) => (
-        <span className={cn(
-          "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize",
-          getTypeBadgeColor(notification.type)
-        )}>
-          {notification.type}
-        </span>
-      )
+      render: (_, notification) => {
+        if (!notification) return null
+        return (
+          <span className={cn(
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize",
+            getTypeBadgeColor(notification.type || "info")
+          )}>
+            {notification.type || "info"}
+          </span>
+        )
+      }
     },
     {
       key: "priority",
       label: "Priority",
-      render: (notification) => (
-        <span className={cn(
-          "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize border",
-          getPriorityBadgeColor(notification.priority)
-        )}>
-          {notification.priority}
-        </span>
-      )
+      render: (_, notification) => {
+        if (!notification) return null
+        return (
+          <span className={cn(
+            "inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize border",
+            getPriorityBadgeColor(notification.priority || "low")
+          )}>
+            {notification.priority || "low"}
+          </span>
+        )
+      }
     },
     {
       key: "category",
       label: "Category",
-      render: (notification) => (
-        <span className="text-sm text-gray-600">
-          {notification.category || "General"}
-        </span>
-      )
+      render: (_, notification) => {
+        if (!notification) return null
+        return (
+          <span className="text-sm text-gray-600">
+            {notification.category || "General"}
+          </span>
+        )
+      }
     },
-    {
+{
       key: "createdAt",
       label: "Created",
-      render: (notification) => (
-        <span className="text-sm text-gray-600">
-          {formatDateTime(notification.createdAt)}
-        </span>
-      )
+      render: (_, notification) => {
+        if (!notification?.createdAt) return null
+        return (
+          <span className="text-sm text-gray-600">
+            {formatDateTime(notification.createdAt)}
+          </span>
+        )
+      }
     },
     {
       key: "actions",
       label: "Actions",
-      render: (notification) => (
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleMarkAsRead([notification.Id])}
-            disabled={notification.isRead}
-            className="text-xs"
-          >
-            {notification.isRead ? "Read" : "Mark Read"}
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => handleDelete([notification.Id])}
-            className="text-xs text-red-600 hover:text-red-700"
-          >
-            Delete
-          </Button>
-        </div>
-      )
+      render: (_, notification) => {
+        if (!notification?.Id) return null
+        return (
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleMarkAsRead([notification.Id])}
+              disabled={notification.isRead}
+              className="text-xs"
+            >
+              {notification.isRead ? "Read" : "Mark Read"}
+            </Button>
+            
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => handleDelete([notification.Id])}
+              className="text-xs text-red-600 hover:text-red-700"
+            >
+              Delete
+            </Button>
+          </div>
+        )
+      }
     }
   ]
 

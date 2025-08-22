@@ -53,14 +53,16 @@ const NotificationCenter = () => {
     }
   }
 
-  const handleNotificationClick = async (notification) => {
+const handleNotificationClick = async (notification) => {
     try {
+      if (!notification?.Id) return
+      
       if (!notification.isRead) {
         await notificationService.markAsRead(notification.Id)
         setUnreadCount(prev => Math.max(0, prev - 1))
         setNotifications(prev => 
           prev.map(n => 
-            n.Id === notification.Id ? { ...n, isRead: true } : n
+            n?.Id === notification.Id ? { ...n, isRead: true } : n
           )
         )
       }
@@ -177,9 +179,9 @@ const NotificationCenter = () => {
                   <ApperIcon name="Bell" className="w-8 h-8 mx-auto mb-2 opacity-50" />
                   <p>No notifications</p>
                 </div>
-              ) : (
+) : (
                 <div className="divide-y divide-gray-100">
-                  {notifications.map((notification) => (
+                  {notifications.filter(n => n?.Id).map((notification) => (
                     <div
                       key={notification.Id}
                       onClick={() => handleNotificationClick(notification)}
@@ -196,11 +198,11 @@ const NotificationCenter = () => {
                           notification.type === "system" && "bg-blue-100",
                           notification.type === "info" && "bg-green-100"
                         )}>
-                          <ApperIcon
-                            name={getNotificationIcon(notification.type)}
+<ApperIcon
+                            name={getNotificationIcon(notification.type || "info")}
                             className={cn(
                               "w-4 h-4",
-                              getPriorityColor(notification.priority)
+                              getPriorityColor(notification.priority || "low")
                             )}
                           />
                         </div>
@@ -211,7 +213,7 @@ const NotificationCenter = () => {
                               "text-sm font-medium truncate",
                               !notification.isRead ? "text-gray-900" : "text-gray-700"
                             )}>
-                              {notification.title}
+{notification.title || 'No title'}
                             </h4>
                             {!notification.isRead && (
                               <div className="w-2 h-2 bg-primary-500 rounded-full flex-shrink-0 ml-2" />
@@ -219,12 +221,12 @@ const NotificationCenter = () => {
                           </div>
                           
                           <p className="text-xs text-gray-600 line-clamp-2">
-                            {notification.message}
+                            {notification.message || 'No message'}
                           </p>
                           
-                          <div className="flex items-center justify-between mt-2">
+<div className="flex items-center justify-between mt-2">
                             <span className="text-xs text-gray-500">
-                              {formatTimeAgo(notification.createdAt)}
+                              {notification.createdAt ? formatTimeAgo(notification.createdAt) : 'Unknown time'}
                             </span>
                             {notification.category && (
                               <span className="text-xs text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">

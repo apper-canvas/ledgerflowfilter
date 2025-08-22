@@ -18,21 +18,23 @@ const DataTable = ({
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
   const [currentPage, setCurrentPage] = useState(1)
 
-  const filteredData = useMemo(() => {
-    if (!searchTerm) return data || []
+const filteredData = useMemo(() => {
+    if (!searchTerm) return (data || []).filter(row => row != null)
     
     const searchLower = searchTerm.toLowerCase()
-return (data || []).filter(row => 
-      Object.values(row).some(value => 
+    return (data || []).filter(row => {
+      if (!row) return false
+      return Object.values(row).some(value => 
         value?.toString().toLowerCase().includes(searchLower)
       )
-    )
+    })
   }, [data, searchTerm])
 
-  const sortedData = useMemo(() => {
+const sortedData = useMemo(() => {
     if (!sortConfig.key) return filteredData
 
     return [...filteredData].sort((a, b) => {
+      if (!a || !b) return 0
       const aValue = a[sortConfig.key]
       const bValue = b[sortConfig.key]
       
@@ -74,10 +76,9 @@ const exportToCSV = () => {
     let csvContent = ""
     const headers = columns.map(col => col.label).join(",")
     csvContent += headers + "\n"
-    
-data.forEach(row => {
+data.filter(row => row != null).forEach(row => {
       const values = columns.map(col => {
-        const value = row[col.key]
+        const value = row?.[col.key]
         return typeof value === 'string' ? `"${value}"` : (value ?? '')
       }).join(",")
       csvContent += values + "\n"
@@ -149,15 +150,15 @@ data.forEach(row => {
               )}
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {paginatedData.map((row, rowIndex) => (
-              <tr key={row.Id || rowIndex} className="hover:bg-gray-50">
+<tbody className="bg-white divide-y divide-gray-200">
+            {paginatedData.filter(row => row != null).map((row, rowIndex) => (
+              <tr key={row?.Id || `row-${rowIndex}`} className="hover:bg-gray-50">
                 {columns.map((column) => (
                   <td
                     key={column.key}
-className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                   >
-                    {column.render ? column.render(row[column.key], row) : (row[column.key] ?? '')}
+                    {column.render ? column.render(row?.[column.key], row) : (row?.[column.key] ?? '')}
                   </td>
                 ))}
                 {(onEdit || onDelete || onView) && (
