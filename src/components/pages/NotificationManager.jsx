@@ -482,12 +482,12 @@ const NotificationManager = () => {
             </Select>
           </div>
 
-          <DataTable
+<DataTable
             data={filteredNotifications}
             columns={columns}
             searchable={false}
             itemsPerPage={10}
-            emptyMessage="No notifications found"
+            emptyMessage="No notifications found matching your filters"
           />
         </CardContent>
       </Card>

@@ -229,13 +229,15 @@ const Inventory = () => {
           </div>
         </CardHeader>
         
-        <CardContent>
+<CardContent>
           {filteredData.length > 0 ? (
             <DataTable
               data={filteredData}
               columns={columns}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              searchable={false}
+              emptyMessage="No stock items found"
             />
           ) : (
             <Empty

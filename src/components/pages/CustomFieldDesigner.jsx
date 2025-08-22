@@ -258,13 +258,15 @@ const CustomFieldDesigner = () => {
           </div>
         </CardHeader>
         
-        <CardContent>
+<CardContent>
           {filteredFields.length > 0 ? (
             <DataTable
               data={filteredFields}
               columns={columns}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              searchable={false}
+              emptyMessage="No custom fields found matching your search"
             />
           ) : (
             <Empty

@@ -50,6 +50,39 @@ class GroupService {
     this.data.splice(index, 1)
     return true
   }
+async search(query, filters = {}) {
+    await this.delay(150)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(group =>
+        group.name.toLowerCase().includes(searchTerm) ||
+        group.nature?.toLowerCase().includes(searchTerm) ||
+        group.parent?.toLowerCase().includes(searchTerm)
+      )
+    }
+    
+    if (filters.nature && filters.nature !== 'all') {
+      results = results.filter(group => group.nature === filters.nature)
+    }
+    
+    if (filters.parent && filters.parent !== 'all') {
+      results = results.filter(group => group.parent === filters.parent)
+    }
+    
+    return results
+  }
+
+  async getByNature(nature) {
+    await this.delay(150)
+    return this.data.filter(group => group.nature === nature)
+  }
+
+  async getParentGroups() {
+    await this.delay(150)
+    return this.data.filter(group => !group.parent)
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

@@ -1,5 +1,4 @@
-import customFieldsData from "@/services/mockData/customFields.json"
-
+import customFieldsData from "@/services/mockData/customFields.json";
 class CustomFieldService {
   constructor() {
     this.data = [...customFieldsData]
@@ -90,11 +89,53 @@ class CustomFieldService {
           break
       }
     }
-
-    return null
+return null
+  }
+  async search(query, filters = {}) {
+    await this.delay(150)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(field =>
+        field.name.toLowerCase().includes(searchTerm) ||
+        field.label.toLowerCase().includes(searchTerm) ||
+        field.description?.toLowerCase().includes(searchTerm) ||
+        field.entityType.toLowerCase().includes(searchTerm)
+      )
+    }
+    
+    if (filters.entityType && filters.entityType !== 'all') {
+      results = results.filter(field => field.entityType === filters.entityType)
+    }
+    
+    if (filters.type && filters.type !== 'all') {
+      results = results.filter(field => field.type === filters.type)
+    }
+    
+    if (filters.required !== undefined) {
+      results = results.filter(field => field.required === filters.required)
+    }
+    
+    return results
   }
 
-  delay(ms) {
+  async getFilteredFields(entityType, searchTerm = '') {
+    await this.delay(100)
+    let fields = await this.getByEntity(entityType)
+    
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase()
+      fields = fields.filter(field =>
+        field.name.toLowerCase().includes(term) ||
+        field.label.toLowerCase().includes(term)
+      )
+    }
+    
+    return fields
+  }
+
+delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 }

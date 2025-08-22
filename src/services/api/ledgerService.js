@@ -79,6 +79,53 @@ async getTopByBalance(limit = 10) {
       count: this.data.length
     }
   }
+async search(query, filters = {}) {
+    await this.delay(200)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(ledger =>
+        ledger.name.toLowerCase().includes(searchTerm) ||
+        ledger.group?.toLowerCase().includes(searchTerm) ||
+        ledger.currency?.toLowerCase().includes(searchTerm)
+      )
+    }
+    
+    if (filters.group && filters.group !== 'all') {
+      results = results.filter(ledger => ledger.group === filters.group)
+    }
+    
+    if (filters.currency && filters.currency !== 'all') {
+      results = results.filter(ledger => ledger.currency === filters.currency)
+    }
+    
+    if (filters.gstApplicable !== undefined) {
+      results = results.filter(ledger => ledger.gstApplicable === filters.gstApplicable)
+    }
+    
+    if (filters.balanceRange) {
+      const { min, max } = filters.balanceRange
+      results = results.filter(ledger => {
+        const balance = ledger.currentBalance || 0
+        return (!min || balance >= min) && (!max || balance <= max)
+      })
+    }
+    
+    return results
+  }
+
+  async getByGroupType(groupType) {
+    await this.delay(200)
+    return this.data.filter(ledger => 
+      ledger.group?.toLowerCase().includes(groupType.toLowerCase())
+    )
+  }
+
+  async getActiveLedgers() {
+    await this.delay(200)
+    return this.data.filter(ledger => ledger.isActive !== false)
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

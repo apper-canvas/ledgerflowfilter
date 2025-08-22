@@ -162,6 +162,55 @@ class ExchangeRateService {
     
     return amount * rate.rate
   }
+async search(query, filters = {}) {
+    await this.delay(200)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(rate =>
+        rate.fromCurrency.toLowerCase().includes(searchTerm) ||
+        rate.toCurrency.toLowerCase().includes(searchTerm) ||
+        rate.rate.toString().includes(searchTerm)
+      )
+    }
+    
+    if (filters.fromCurrency && filters.fromCurrency !== 'all') {
+      results = results.filter(rate => rate.fromCurrency === filters.fromCurrency)
+    }
+    
+    if (filters.toCurrency && filters.toCurrency !== 'all') {
+      results = results.filter(rate => rate.toCurrency === filters.toCurrency)
+    }
+    
+    if (filters.dateRange) {
+      const { from, to } = filters.dateRange
+      if (from || to) {
+        results = results.filter(rate => {
+          const rateDate = new Date(rate.date)
+          const fromDate = from ? new Date(from) : new Date('1900-01-01')
+          const toDate = to ? new Date(to) : new Date('2100-12-31')
+          return rateDate >= fromDate && rateDate <= toDate
+        })
+      }
+    }
+    
+    if (filters.rateRange) {
+      const { min, max } = filters.rateRange
+      results = results.filter(rate => {
+        return (!min || rate.rate >= min) && (!max || rate.rate <= max)
+      })
+    }
+    
+    return results.sort((a, b) => new Date(b.date) - new Date(a.date))
+  }
+
+  async getByCurrencyPair(fromCurrency, toCurrency) {
+    await this.delay(200)
+    return this.data.filter(rate => 
+      rate.fromCurrency === fromCurrency && rate.toCurrency === toCurrency
+    ).sort((a, b) => new Date(b.date) - new Date(a.date))
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

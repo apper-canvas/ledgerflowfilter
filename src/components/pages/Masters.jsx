@@ -340,13 +340,15 @@ const ledgerColumns = [
           </div>
         </CardHeader>
         
-        <CardContent>
+<CardContent>
           {filteredData.length > 0 ? (
-<DataTable
+            <DataTable
               data={filteredData}
               columns={getColumns()}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              searchable={false}
+              emptyMessage={`No ${currentSection} found matching your search`}
             />
           ) : (
             <Empty

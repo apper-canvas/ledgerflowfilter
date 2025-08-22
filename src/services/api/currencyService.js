@@ -115,6 +115,35 @@ class CurrencyService {
     currency.isBaseCurrency = true
     return { ...currency }
   }
+async search(query, filters = {}) {
+    await this.delay(200)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(currency =>
+        currency.code.toLowerCase().includes(searchTerm) ||
+        currency.name.toLowerCase().includes(searchTerm) ||
+        currency.symbol?.includes(searchTerm)
+      )
+    }
+    
+    if (filters.isActive !== undefined) {
+      results = results.filter(currency => currency.isActive === filters.isActive)
+    }
+    
+    if (filters.isBaseCurrency !== undefined) {
+      results = results.filter(currency => currency.isBaseCurrency === filters.isBaseCurrency)
+    }
+    
+    return results
+  }
+
+  async getByRegion(region) {
+    await this.delay(200)
+    // This would be implemented based on currency regions
+    return this.data.filter(currency => currency.region === region)
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

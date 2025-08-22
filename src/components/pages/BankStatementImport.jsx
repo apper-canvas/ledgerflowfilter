@@ -358,11 +358,13 @@ const BankStatementImport = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          {statements.length > 0 ? (
+{statements.length > 0 ? (
             <DataTable
               data={statements}
               columns={columns}
               onDelete={handleDelete}
+              searchable={true}
+              emptyMessage="No bank statements imported yet"
             />
           ) : (
             <div className="text-center py-8">

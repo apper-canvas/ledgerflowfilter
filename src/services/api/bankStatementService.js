@@ -290,6 +290,58 @@ if (isNaN(date.getTime())) {
     
     return true
   }
+async search(query, filters = {}) {
+    await this.delay(200)
+    const ledgers = await ledgerService.getAll()
+    let results = this.data.map(statement => ({
+      ...statement,
+      ledgerName: ledgers.find(l => l.Id === statement.ledgerId)?.name || "Unknown"
+    }))
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(statement =>
+        statement.description.toLowerCase().includes(searchTerm) ||
+        statement.ledgerName.toLowerCase().includes(searchTerm) ||
+        statement.amount.toString().includes(searchTerm)
+      )
+    }
+    
+    if (filters.ledgerId) {
+      results = results.filter(statement => statement.ledgerId === parseInt(filters.ledgerId))
+    }
+    
+    if (filters.matchStatus && filters.matchStatus !== 'all') {
+      results = results.filter(statement => statement.matchStatus === filters.matchStatus)
+    }
+    
+    if (filters.dateRange) {
+      const { from, to } = filters.dateRange
+      if (from || to) {
+        results = results.filter(statement => {
+          const statementDate = new Date(statement.date)
+          const fromDate = from ? new Date(from) : new Date('1900-01-01')
+          const toDate = to ? new Date(to) : new Date('2100-12-31')
+          return statementDate >= fromDate && statementDate <= toDate
+        })
+      }
+    }
+    
+    if (filters.amountRange) {
+      const { min, max } = filters.amountRange
+      results = results.filter(statement => {
+        const amount = Math.abs(statement.amount)
+        return (!min || amount >= min) && (!max || amount <= max)
+      })
+    }
+    
+    return results
+  }
+
+  async getByMatchStatus(status) {
+    await this.delay(200)
+    return this.data.filter(statement => statement.matchStatus === status)
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

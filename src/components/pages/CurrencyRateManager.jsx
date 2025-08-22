@@ -315,13 +315,15 @@ const CurrencyRateManager = () => {
           </div>
         </CardHeader>
         
-        <CardContent>
+<CardContent>
           {filteredRates.length > 0 ? (
             <DataTable
               data={filteredRates}
               columns={columns}
               onEdit={handleEdit}
               onDelete={handleDelete}
+              searchable={false}
+              emptyMessage="No exchange rates found matching your criteria"
             />
           ) : (
             <Empty

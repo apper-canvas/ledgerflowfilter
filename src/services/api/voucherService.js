@@ -111,6 +111,72 @@ async getByLedgerAndDate(ledgerId, fromDate, toDate) {
     
     return { monthlyData }
   }
+async search(query, filters = {}) {
+    await this.delay(250)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(voucher =>
+        voucher.number?.toLowerCase().includes(searchTerm) ||
+        voucher.narration?.toLowerCase().includes(searchTerm) ||
+        voucher.type?.toLowerCase().includes(searchTerm)
+      )
+    }
+    
+    if (filters.type && filters.type !== 'all') {
+      results = results.filter(voucher => voucher.type === filters.type)
+    }
+    
+    if (filters.status && filters.status !== 'all') {
+      results = results.filter(voucher => voucher.status === filters.status)
+    }
+    
+    if (filters.dateRange) {
+      const { from, to } = filters.dateRange
+      if (from || to) {
+        results = results.filter(voucher => {
+          const voucherDate = new Date(voucher.date)
+          const fromDate = from ? new Date(from) : new Date('1900-01-01')
+          const toDate = to ? new Date(to) : new Date('2100-12-31')
+          return voucherDate >= fromDate && voucherDate <= toDate
+        })
+      }
+    }
+    
+    if (filters.amountRange) {
+      const { min, max } = filters.amountRange
+      results = results.filter(voucher => {
+        const total = voucher.entries?.reduce((sum, entry) => 
+          sum + (entry.type === "dr" ? entry.amount : 0), 0) || 0
+        return (!min || total >= min) && (!max || total <= max)
+      })
+    }
+    
+    return results.sort((a, b) => new Date(b.date) - new Date(a.date))
+  }
+
+  async getByType(type) {
+    await this.delay(200)
+    return this.data.filter(voucher => voucher.type === type)
+  }
+
+  async getByDateRange(fromDate, toDate) {
+    await this.delay(200)
+    return this.data.filter(voucher => {
+      const voucherDate = new Date(voucher.date)
+      const from = new Date(fromDate)
+      const to = new Date(toDate)
+      return voucherDate >= from && voucherDate <= to
+    })
+  }
+
+  async getRecent(limit = 10) {
+    await this.delay(150)
+    return [...this.data]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, limit)
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

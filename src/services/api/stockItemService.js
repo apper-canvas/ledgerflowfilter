@@ -50,6 +50,49 @@ class StockItemService {
     this.data.splice(index, 1)
     return true
   }
+async search(query, filters = {}) {
+    await this.delay(200)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(item =>
+        item.name.toLowerCase().includes(searchTerm) ||
+        item.hsnCode?.includes(searchTerm) ||
+        item.unit?.toLowerCase().includes(searchTerm)
+      )
+    }
+    
+    if (filters.unit && filters.unit !== 'all') {
+      results = results.filter(item => item.unit === filters.unit)
+    }
+    
+    if (filters.gstRate && filters.gstRate !== 'all') {
+      results = results.filter(item => item.gstRate === parseFloat(filters.gstRate))
+    }
+    
+    if (filters.stockValue) {
+      const { min, max } = filters.stockValue
+      results = results.filter(item => {
+        const value = item.openingStock?.value || 0
+        return (!min || value >= min) && (!max || value <= max)
+      })
+    }
+    
+    return results
+  }
+
+  async getByCategory(category) {
+    await this.delay(200)
+    return this.data.filter(item => item.category === category)
+  }
+
+  async getLowStockItems(threshold = 10) {
+    await this.delay(200)
+    return this.data.filter(item => 
+      (item.openingStock?.quantity || 0) <= threshold
+    )
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

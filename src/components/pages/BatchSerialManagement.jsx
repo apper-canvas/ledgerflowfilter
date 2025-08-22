@@ -350,15 +350,16 @@ const BatchSerialManagement = () => {
         <CardContent>
           {loading ? (
             <div className="animate-pulse bg-gray-200 h-64 rounded-lg" />
-          ) : (
+) : (
             <DataTable
               data={filteredData}
               columns={columns}
               onEdit={handleManageItem}
               onDelete={handleDelete}
+              searchable={false}
+              emptyMessage="No batch/serial numbers found matching your filters"
             />
           )}
-
           {filteredData.length === 0 && !loading && (
             <div className="text-center py-12 text-gray-500">
               <ApperIcon name="Package" className="w-12 h-12 mx-auto mb-4 opacity-50" />

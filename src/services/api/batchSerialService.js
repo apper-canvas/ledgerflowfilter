@@ -92,6 +92,70 @@ class BatchSerialService {
     
     return `${prefix}${nextNumber.toString().padStart(6, "0")}`
   }
+async search(query, filters = {}) {
+    await this.delay(200)
+    let results = [...this.data]
+    
+    if (query) {
+      const searchTerm = query.toLowerCase()
+      results = results.filter(item =>
+        item.number.toLowerCase().includes(searchTerm) ||
+        item.location?.toLowerCase().includes(searchTerm)
+      )
+    }
+    
+    if (filters.stockItemId) {
+      results = results.filter(item => item.stockItemId === parseInt(filters.stockItemId))
+    }
+    
+    if (filters.type && filters.type !== 'all') {
+      results = results.filter(item => item.type === filters.type)
+    }
+    
+    if (filters.status && filters.status !== 'all') {
+      results = results.filter(item => item.status === filters.status)
+    }
+    
+    if (filters.location && filters.location !== 'all') {
+      results = results.filter(item => item.location === filters.location)
+    }
+    
+    if (filters.expiryStatus) {
+      const today = new Date()
+      results = results.filter(item => {
+        if (!item.expiryDate) return filters.expiryStatus === 'no-expiry'
+        
+        const expiry = new Date(item.expiryDate)
+        const daysUntilExpiry = Math.ceil((expiry - today) / (1000 * 60 * 60 * 24))
+        
+        switch (filters.expiryStatus) {
+          case 'expired': return daysUntilExpiry < 0
+          case 'expiring': return daysUntilExpiry >= 0 && daysUntilExpiry <= 30
+          case 'valid': return daysUntilExpiry > 30
+          default: return true
+        }
+      })
+    }
+    
+    return results
+  }
+
+  async getByLocation(location) {
+    await this.delay(200)
+    return this.data.filter(item => item.location === location)
+  }
+
+  async getExpiringItems(days = 30) {
+    await this.delay(200)
+    const futureDate = new Date()
+    futureDate.setDate(futureDate.getDate() + days)
+    
+    return this.data.filter(item => {
+      if (!item.expiryDate) return false
+      const expiryDate = new Date(item.expiryDate)
+      return expiryDate <= futureDate && expiryDate >= new Date()
+    })
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
