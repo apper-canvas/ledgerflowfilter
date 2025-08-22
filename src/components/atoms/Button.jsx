@@ -14,7 +14,9 @@ link: "text-primary-700 underline-offset-4 hover:underline",
     warning: "bg-warning text-gray-900 hover:bg-yellow-400",
     danger: "bg-error text-white hover:bg-red-600",
     export: "bg-blue-600 text-white hover:bg-blue-700",
-    analytics: "bg-purple-600 text-white hover:bg-purple-700"
+    analytics: "bg-purple-600 text-white hover:bg-purple-700",
+    admin: "bg-red-700 text-white hover:bg-red-800",
+    user: "bg-indigo-600 text-white hover:bg-indigo-700"
   }
   
   const sizes = {

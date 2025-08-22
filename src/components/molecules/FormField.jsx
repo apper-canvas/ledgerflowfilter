@@ -4,7 +4,7 @@ import Input from "@/components/atoms/Input"
 import Select from "@/components/atoms/Select"
 import { cn } from "@/utils/cn"
 
-const FormField = ({ label, type = "text", error, children, className, required, ...props }) => {
+const FormField = ({ label, type = "text", error, children, className, required, disabled, ...props }) => {
   const id = props.id || props.name
 
   return (
@@ -15,9 +15,9 @@ const FormField = ({ label, type = "text", error, children, className, required,
           {required && <span className="text-error ml-1">*</span>}
         </Label>
       )}
-      {children || (
+{children || (
         type === "select" ? (
-          <Select id={id} {...props}>
+          <Select id={id} disabled={disabled} {...props}>
             {props.options?.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
@@ -25,7 +25,7 @@ const FormField = ({ label, type = "text", error, children, className, required,
             ))}
           </Select>
         ) : (
-          <Input id={id} type={type} {...props} />
+          <Input id={id} type={type} disabled={disabled} {...props} />
         )
       )}
       {error && <p className="text-sm text-error">{error}</p>}

@@ -51,16 +51,33 @@ class AuditService {
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
   }
 
-  async logOperation(entityType, entityId, operation, changes = null, oldValues = null, newValues = null) {
+async logOperation(entityType, entityId, operation, changes = null, oldValues = null, newValues = null) {
     await this.delay(100)
+    
+    // Get current user context
+    let userId = "system"
+    let userName = "System"
+    
+    try {
+      // Try to import userService to get current user
+      const { default: userService } = await import("@/services/api/userService")
+      const currentUser = userService.getCurrentUser()
+      if (currentUser) {
+        userId = currentUser.username || currentUser.Id.toString()
+        userName = `${currentUser.firstName} ${currentUser.lastName || ''}`.trim() || currentUser.username
+      }
+    } catch (error) {
+      // Fallback if userService is not available
+      console.warn("Could not get user context for audit log:", error)
+    }
     
     const logEntry = {
       Id: this.nextId++,
       entityType,
       entityId: parseInt(entityId),
-      operation, // create, update, delete
-      userId: "user1", // In a real app, this would come from authentication
-      userName: "Admin User", // In a real app, this would come from user context
+      operation, // create, update, delete, login, logout, etc.
+      userId,
+      userName,
       timestamp: new Date().toISOString(),
       changes,
       oldValues,

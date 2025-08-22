@@ -206,12 +206,13 @@ const resetForm = () => {
     item.group?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const sections = [
+const sections = [
     { key: "ledgers", label: "Ledgers", icon: "BookOpen" },
     { key: "groups", label: "Groups", icon: "FolderOpen" },
     { key: "custom-fields", label: "Custom Fields", icon: "Settings2" },
     { key: "cost-centers", label: "Cost Centers", icon: "Target" },
-    { key: "currencies", label: "Currencies", icon: "DollarSign" }
+    { key: "currencies", label: "Currencies", icon: "DollarSign" },
+    { key: "users", label: "User Management", icon: "Users" }
   ]
 const ledgerColumns = [
     { key: "name", label: "Name" },

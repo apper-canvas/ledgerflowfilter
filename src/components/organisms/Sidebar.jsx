@@ -33,6 +33,7 @@ children: [
         { path: "/masters/custom-fields", label: "Custom Fields" },
         { path: "/masters/cost-centers", label: "Cost Centers" },
         { path: "/masters/currencies", label: "Currencies" },
+        { path: "/users", label: "User Management" },
         { path: "/notifications", label: "Notifications" },
 { path: "/bank-statements", label: "Bank Statements" },
         { path: "/audit-logs", label: "Audit Logs" }

@@ -43,10 +43,24 @@ export default {
           800: "#075985",
           900: "#0c4a6e",
         },
-        success: "#28a745",
-        warning: "#ffc107",
+success: "#28a745",
+        warning: "#ffc107", 
         error: "#dc3545",
         info: "#17a2b8",
+        admin: {
+          50: "#fef2f2",
+          100: "#fee2e2", 
+          500: "#ef4444",
+          700: "#b91c1c",
+          800: "#991b1b"
+        },
+        user: {
+          50: "#eef2ff",
+          100: "#e0e7ff",
+          500: "#6366f1", 
+          600: "#4f46e5",
+          700: "#4338ca"
+        }
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
