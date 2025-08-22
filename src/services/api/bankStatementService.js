@@ -1,11 +1,14 @@
-import bankStatementsData from "@/services/mockData/bankStatements.json"
-import voucherService from "@/services/api/voucherService"
-import ledgerService from "@/services/api/ledgerService"
-import Papa from "papaparse"
+import auditService from "@/services/api/auditService";
+import Papa from "papaparse";
+import React from "react";
+import bankStatementsData from "@/services/mockData/bankStatements.json";
+import ledgerService from "@/services/api/ledgerService";
+import voucherService from "@/services/api/voucherService";
+import Error from "@/components/ui/Error";
 
 class BankStatementService {
-  constructor() {
-    this.data = [...bankStatementsData]
+constructor() {
+    this.data = [...bankStatementsData];
   }
 
   async getAll() {
@@ -27,7 +30,7 @@ class BankStatementService {
     return { ...item }
   }
 
-  async create(statement) {
+async create(statement) {
     await this.delay(300)
     const newId = this.data.length > 0 ? Math.max(...this.data.map(s => s.Id)) + 1 : 1
     const newStatement = {
@@ -38,27 +41,64 @@ class BankStatementService {
       importDate: new Date().toISOString().split('T')[0]
     }
     this.data.push(newStatement)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'bankStatement',
+      newId,
+      'create',
+      { date: newStatement.date, description: newStatement.description, amount: newStatement.amount },
+      null,
+      newStatement
+    )
+    
     return { ...newStatement }
   }
 
-  async update(id, statement) {
+async update(id, statement) {
     await this.delay(300)
     const index = this.data.findIndex(s => s.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Bank statement not found")
     }
+    
+    const oldStatement = { ...this.data[index] }
     const updatedStatement = { ...statement, Id: parseInt(id) }
     this.data[index] = updatedStatement
+    
+    // Log the update
+    await auditService.logOperation(
+      'bankStatement',
+      parseInt(id),
+      'update',
+      { matchStatus: updatedStatement.matchStatus },
+      oldStatement,
+      updatedStatement
+    )
+    
     return { ...updatedStatement }
   }
 
-  async delete(id) {
+async delete(id) {
     await this.delay(250)
     const index = this.data.findIndex(s => s.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Bank statement not found")
     }
+    
+    const deletedStatement = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'bankStatement',
+      parseInt(id),
+      'delete',
+      null,
+      deletedStatement,
+      null
+    )
+    
     return true
   }
 

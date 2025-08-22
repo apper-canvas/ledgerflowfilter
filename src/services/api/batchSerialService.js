@@ -1,4 +1,7 @@
-import batchSerialData from "@/services/mockData/batchSerial.json"
+import auditService from "@/services/api/auditService";
+import React from "react";
+import batchSerialData from "@/services/mockData/batchSerial.json";
+import Error from "@/components/ui/Error";
 
 class BatchSerialService {
   constructor() {
@@ -24,7 +27,7 @@ class BatchSerialService {
     return this.data.filter(b => b.stockItemId === parseInt(stockItemId))
   }
 
-  async create(batchSerial) {
+async create(batchSerial) {
     await this.delay(300)
     const newId = Math.max(...this.data.map(b => b.Id), 0) + 1
     const newBatchSerial = {
@@ -33,6 +36,17 @@ class BatchSerialService {
       createdDate: new Date().toISOString().split("T")[0]
     }
     this.data.push(newBatchSerial)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'batchSerial',
+      newId,
+      'create',
+      { number: newBatchSerial.number, type: newBatchSerial.type, stockItemId: newBatchSerial.stockItemId },
+      null,
+      newBatchSerial
+    )
+    
     return { ...newBatchSerial }
   }
 
@@ -42,8 +56,21 @@ class BatchSerialService {
     if (index === -1) {
       throw new Error("Batch/Serial not found")
     }
+    
+    const oldBatchSerial = { ...this.data[index] }
     const updatedBatchSerial = { ...batchSerial, Id: parseInt(id) }
     this.data[index] = updatedBatchSerial
+    
+    // Log the update
+    await auditService.logOperation(
+      'batchSerial',
+      parseInt(id),
+      'update',
+      { status: updatedBatchSerial.status },
+      oldBatchSerial,
+      updatedBatchSerial
+    )
+    
     return { ...updatedBatchSerial }
   }
 
@@ -53,7 +80,20 @@ class BatchSerialService {
     if (index === -1) {
       throw new Error("Batch/Serial not found")
     }
+    
+    const deletedBatchSerial = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'batchSerial',
+      parseInt(id),
+      'delete',
+      null,
+      deletedBatchSerial,
+      null
+    )
+    
     return true
   }
 
@@ -91,8 +131,9 @@ class BatchSerialService {
     }
     
     return `${prefix}${nextNumber.toString().padStart(6, "0")}`
-  }
-async search(query, filters = {}) {
+}
+
+  async search(query, filters = {}) {
     await this.delay(200)
     let results = [...this.data]
     

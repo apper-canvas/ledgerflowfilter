@@ -1,4 +1,7 @@
-import vouchersData from "@/services/mockData/vouchers.json"
+import auditService from "@/services/api/auditService";
+import React from "react";
+import vouchersData from "@/services/mockData/vouchers.json";
+import Error from "@/components/ui/Error";
 
 class VoucherService {
   constructor() {
@@ -19,16 +22,27 @@ class VoucherService {
     return { ...item }
   }
 
-  async create(voucher) {
+async create(voucher) {
     await this.delay(400)
     const newId = Math.max(...this.data.map(v => v.Id)) + 1
-const newVoucher = {
+    const newVoucher = {
       ...voucher,
       Id: newId,
       status: "posted",
       customFields: voucher.customFields || {}
     }
     this.data.push(newVoucher)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'voucher',
+      newId,
+      'create',
+      { type: newVoucher.type, number: newVoucher.number, date: newVoucher.date },
+      null,
+      newVoucher
+    )
+    
     return { ...newVoucher }
   }
 
@@ -38,18 +52,44 @@ const newVoucher = {
     if (index === -1) {
       throw new Error("Voucher not found")
     }
-const updatedVoucher = { ...voucher, Id: parseInt(id), customFields: voucher.customFields || {} }
+    
+    const oldVoucher = { ...this.data[index] }
+    const updatedVoucher = { ...voucher, Id: parseInt(id), customFields: voucher.customFields || {} }
     this.data[index] = updatedVoucher
+    
+    // Log the update
+    await auditService.logOperation(
+      'voucher',
+      parseInt(id),
+      'update',
+      { narration: updatedVoucher.narration, status: updatedVoucher.status },
+      oldVoucher,
+      updatedVoucher
+    )
+    
     return { ...updatedVoucher }
   }
 
-  async delete(id) {
+async delete(id) {
     await this.delay(300)
     const index = this.data.findIndex(v => v.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Voucher not found")
     }
+    
+    const deletedVoucher = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'voucher',
+      parseInt(id),
+      'delete',
+      null,
+      deletedVoucher,
+      null
+    )
+    
     return true
   }
 async getByLedgerAndDate(ledgerId, fromDate, toDate) {

@@ -1,4 +1,5 @@
-import groupsData from "@/services/mockData/groups.json"
+import auditService from "@/services/api/auditService";
+import groupsData from "@/services/mockData/groups.json";
 
 class GroupService {
   constructor() {
@@ -19,7 +20,7 @@ class GroupService {
     return { ...item }
   }
 
-  async create(group) {
+async create(group) {
     await this.delay(250)
     const newId = Math.max(...this.data.map(g => g.Id)) + 1
     const newGroup = {
@@ -27,27 +28,64 @@ class GroupService {
       Id: newId
     }
     this.data.push(newGroup)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'group',
+      newId,
+      'create',
+      { name: newGroup.name, nature: newGroup.nature },
+      null,
+      newGroup
+    )
+    
     return { ...newGroup }
   }
 
-  async update(id, group) {
+async update(id, group) {
     await this.delay(250)
     const index = this.data.findIndex(g => g.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Group not found")
     }
+    
+    const oldGroup = { ...this.data[index] }
     const updatedGroup = { ...group, Id: parseInt(id) }
     this.data[index] = updatedGroup
+    
+    // Log the update
+    await auditService.logOperation(
+      'group',
+      parseInt(id),
+      'update',
+      { name: updatedGroup.name, nature: updatedGroup.nature },
+      oldGroup,
+      updatedGroup
+    )
+    
     return { ...updatedGroup }
   }
 
-  async delete(id) {
+async delete(id) {
     await this.delay(200)
     const index = this.data.findIndex(g => g.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Group not found")
     }
+    
+    const deletedGroup = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'group',
+      parseInt(id),
+      'delete',
+      null,
+      deletedGroup,
+      null
+    )
+    
     return true
   }
 async search(query, filters = {}) {

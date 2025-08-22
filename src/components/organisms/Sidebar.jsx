@@ -1,7 +1,7 @@
-import React from "react"
-import { NavLink, useLocation } from "react-router-dom"
-import ApperIcon from "@/components/ApperIcon"
-import { cn } from "@/utils/cn"
+import React from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import ApperIcon from "@/components/ApperIcon";
+import { cn } from "@/utils/cn";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation()
@@ -34,12 +34,13 @@ children: [
         { path: "/masters/cost-centers", label: "Cost Centers" },
         { path: "/masters/currencies", label: "Currencies" },
         { path: "/notifications", label: "Notifications" },
-        { path: "/bank-statements", label: "Bank Statements" }
+{ path: "/bank-statements", label: "Bank Statements" },
+        { path: "/audit-logs", label: "Audit Logs" }
       ]
     },
     { path: "/inventory", label: "Inventory", icon: "Package", shortcut: "Alt+I" },
     { 
-      path: "/reports", 
+      path: "/reports",
       label: "Reports", 
       icon: "BarChart3", 
       shortcut: "Alt+R",

@@ -1,4 +1,7 @@
-import stockItemsData from "@/services/mockData/stockItems.json"
+import auditService from "@/services/api/auditService";
+import React from "react";
+import stockItemsData from "@/services/mockData/stockItems.json";
+import Error from "@/components/ui/Error";
 
 class StockItemService {
   constructor() {
@@ -19,7 +22,7 @@ class StockItemService {
     return { ...item }
   }
 
-  async create(stockItem) {
+async create(stockItem) {
     await this.delay(300)
     const newId = Math.max(...this.data.map(s => s.Id)) + 1
     const newStockItem = {
@@ -27,17 +30,41 @@ class StockItemService {
       Id: newId
     }
     this.data.push(newStockItem)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'stockItem',
+      newId,
+      'create',
+      { name: newStockItem.name, unit: newStockItem.unit, gstRate: newStockItem.gstRate },
+      null,
+      newStockItem
+    )
+    
     return { ...newStockItem }
   }
 
-  async update(id, stockItem) {
+async update(id, stockItem) {
     await this.delay(300)
     const index = this.data.findIndex(s => s.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Stock item not found")
     }
+    
+    const oldStockItem = { ...this.data[index] }
     const updatedStockItem = { ...stockItem, Id: parseInt(id) }
     this.data[index] = updatedStockItem
+    
+    // Log the update
+    await auditService.logOperation(
+      'stockItem',
+      parseInt(id),
+      'update',
+      { name: updatedStockItem.name, gstRate: updatedStockItem.gstRate },
+      oldStockItem,
+      updatedStockItem
+    )
+    
     return { ...updatedStockItem }
   }
 
@@ -47,7 +74,20 @@ class StockItemService {
     if (index === -1) {
       throw new Error("Stock item not found")
     }
+    
+    const deletedStockItem = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'stockItem',
+      parseInt(id),
+      'delete',
+      null,
+      deletedStockItem,
+      null
+    )
+    
     return true
   }
 async search(query, filters = {}) {

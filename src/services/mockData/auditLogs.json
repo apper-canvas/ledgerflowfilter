@@ -1,0 +1,223 @@
+[
+  {
+    "Id": 1,
+    "entityType": "voucher",
+    "entityId": 1,
+    "operation": "create",
+    "userId": "user1",
+    "userName": "Admin User",
+    "timestamp": "2024-01-15T10:30:00.000Z",
+    "changes": {
+      "type": "sales",
+      "number": "0001",
+      "date": "2024-01-15",
+      "narration": "Sales voucher for ABC Corp"
+    },
+    "oldValues": null,
+    "newValues": {
+      "type": "sales",
+      "number": "0001",
+      "amount": 5000,
+      "status": "posted"
+    },
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "Id": 2,
+    "entityType": "ledger",
+    "entityId": 3,
+    "operation": "update",
+    "userId": "user1",
+    "userName": "Admin User",
+    "timestamp": "2024-01-14T15:45:00.000Z",
+    "changes": {
+      "name": "Updated Sales Account",
+      "openingBalance": 15000
+    },
+    "oldValues": {
+      "name": "Sales Account",
+      "openingBalance": 10000
+    },
+    "newValues": {
+      "name": "Updated Sales Account",
+      "openingBalance": 15000
+    },
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "Id": 3,
+    "entityType": "voucher",
+    "entityId": 2,
+    "operation": "delete",
+    "userId": "user2",
+    "userName": "Finance User",
+    "timestamp": "2024-01-13T09:20:00.000Z",
+    "changes": null,
+    "oldValues": {
+      "type": "purchase",
+      "number": "P001",
+      "amount": 3000,
+      "status": "draft"
+    },
+    "newValues": null,
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  {
+    "Id": 4,
+    "entityType": "exchangeRate",
+    "entityId": 5,
+    "operation": "create",
+    "userId": "user1",
+    "userName": "Admin User",
+    "timestamp": "2024-01-12T14:10:00.000Z",
+    "changes": {
+      "fromCurrency": "USD",
+      "toCurrency": "INR",
+      "rate": 83.25,
+      "date": "2024-01-12"
+    },
+    "oldValues": null,
+    "newValues": {
+      "fromCurrency": "USD",
+      "toCurrency": "INR",
+      "rate": 83.25,
+      "date": "2024-01-12"
+    },
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "Id": 5,
+    "entityType": "customField",
+    "entityId": 1,
+    "operation": "create",
+    "userId": "user1",
+    "userName": "Admin User",
+    "timestamp": "2024-01-11T11:30:00.000Z",
+    "changes": {
+      "name": "customerReference",
+      "label": "Customer Reference",
+      "type": "text",
+      "entityType": "voucher"
+    },
+    "oldValues": null,
+    "newValues": {
+      "name": "customerReference",
+      "label": "Customer Reference",
+      "type": "text",
+      "entityType": "voucher",
+      "required": true
+    },
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "Id": 6,
+    "entityType": "stockItem",
+    "entityId": 10,
+    "operation": "update",
+    "userId": "user2",
+    "userName": "Finance User",
+    "timestamp": "2024-01-10T16:45:00.000Z",
+    "changes": {
+      "name": "Updated Product Name",
+      "gstRate": 18
+    },
+    "oldValues": {
+      "name": "Product ABC",
+      "gstRate": 12
+    },
+    "newValues": {
+      "name": "Updated Product Name",
+      "gstRate": 18
+    },
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  {
+    "Id": 7,
+    "entityType": "group",
+    "entityId": 8,
+    "operation": "delete",
+    "userId": "user1",
+    "userName": "Admin User",
+    "timestamp": "2024-01-09T13:15:00.000Z",
+    "changes": null,
+    "oldValues": {
+      "name": "Temporary Group",
+      "nature": "Assets",
+      "parent": null
+    },
+    "newValues": null,
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "Id": 8,
+    "entityType": "bankStatement",
+    "entityId": 15,
+    "operation": "create",
+    "userId": "user2",
+    "userName": "Finance User",
+    "timestamp": "2024-01-08T10:20:00.000Z",
+    "changes": {
+      "date": "2024-01-08",
+      "description": "Online Transfer",
+      "amount": 25000,
+      "matchStatus": "unmatched"
+    },
+    "oldValues": null,
+    "newValues": {
+      "date": "2024-01-08",
+      "description": "Online Transfer",
+      "amount": 25000,
+      "balance": 125000,
+      "matchStatus": "unmatched"
+    },
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  },
+  {
+    "Id": 9,
+    "entityType": "batchSerial",
+    "entityId": 20,
+    "operation": "update",
+    "userId": "user1",
+    "userName": "Admin User",
+    "timestamp": "2024-01-07T14:30:00.000Z",
+    "changes": {
+      "status": "expired"
+    },
+    "oldValues": {
+      "status": "active"
+    },
+    "newValues": {
+      "status": "expired"
+    },
+    "ipAddress": "192.168.1.100",
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  },
+  {
+    "Id": 10,
+    "entityType": "notification",
+    "entityId": 5,
+    "operation": "update",
+    "userId": "user2",
+    "userName": "Finance User",
+    "timestamp": "2024-01-06T09:45:00.000Z",
+    "changes": {
+      "isRead": true
+    },
+    "oldValues": {
+      "isRead": false
+    },
+    "newValues": {
+      "isRead": true
+    },
+    "ipAddress": "192.168.1.101",
+    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  }
+]

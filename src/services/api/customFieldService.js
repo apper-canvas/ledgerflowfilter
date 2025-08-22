@@ -1,4 +1,8 @@
+import auditService from "@/services/api/auditService";
+import React from "react";
 import customFieldsData from "@/services/mockData/customFields.json";
+import Error from "@/components/ui/Error";
+
 class CustomFieldService {
   constructor() {
     this.data = [...customFieldsData]
@@ -21,7 +25,7 @@ class CustomFieldService {
   async getByEntity(entityType) {
     await this.delay(200)
     return this.data.filter(cf => cf.entityType === entityType || cf.entityType === 'all')
-  }
+}
 
   async create(customField) {
     await this.delay(300)
@@ -33,31 +37,68 @@ class CustomFieldService {
       updatedAt: new Date().toISOString()
     }
     this.data.push(newCustomField)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'customField',
+      newId,
+      'create',
+      { name: newCustomField.name, label: newCustomField.label, type: newCustomField.type },
+      null,
+      newCustomField
+    )
+    
     return { ...newCustomField }
   }
 
-  async update(id, customField) {
+async update(id, customField) {
     await this.delay(300)
     const index = this.data.findIndex(cf => cf.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Custom field not found")
     }
+    
+    const oldCustomField = { ...this.data[index] }
     const updatedCustomField = { 
       ...customField, 
       Id: parseInt(id),
       updatedAt: new Date().toISOString()
     }
     this.data[index] = updatedCustomField
+    
+    // Log the update
+    await auditService.logOperation(
+      'customField',
+      parseInt(id),
+      'update',
+      { label: updatedCustomField.label, type: updatedCustomField.type },
+      oldCustomField,
+      updatedCustomField
+    )
+    
     return { ...updatedCustomField }
   }
 
-  async delete(id) {
+async delete(id) {
     await this.delay(250)
     const index = this.data.findIndex(cf => cf.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Custom field not found")
     }
+    
+    const deletedCustomField = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'customField',
+      parseInt(id),
+      'delete',
+      null,
+      deletedCustomField,
+      null
+    )
+    
     return true
   }
 
@@ -88,9 +129,10 @@ class CustomFieldService {
           if (!emailPattern.test(value)) return `${fieldDefinition.label} must be a valid email address`
           break
       }
-    }
-return null
+}
+    return null
   }
+  
   async search(query, filters = {}) {
     await this.delay(150)
     let results = [...this.data]
@@ -133,9 +175,9 @@ return null
     }
     
     return fields
-  }
+}
 
-delay(ms) {
+  delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 }

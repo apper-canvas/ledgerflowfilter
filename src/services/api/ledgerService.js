@@ -1,4 +1,7 @@
-import ledgersData from "@/services/mockData/ledgers.json"
+import auditService from "@/services/api/auditService";
+import React from "react";
+import ledgersData from "@/services/mockData/ledgers.json";
+import Error from "@/components/ui/Error";
 
 class LedgerService {
   constructor() {
@@ -19,10 +22,10 @@ class LedgerService {
     return { ...item }
   }
 
-  async create(ledger) {
+async create(ledger) {
     await this.delay(300)
     const newId = Math.max(...this.data.map(l => l.Id)) + 1
-const newLedger = {
+    const newLedger = {
       ...ledger,
       Id: newId,
       currentBalance: ledger.openingBalance || 0,
@@ -30,27 +33,64 @@ const newLedger = {
       customFields: ledger.customFields || {}
     }
     this.data.push(newLedger)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'ledger',
+      newId,
+      'create',
+      { name: newLedger.name, group: newLedger.group, openingBalance: newLedger.openingBalance },
+      null,
+      newLedger
+    )
+    
     return { ...newLedger }
   }
 
-  async update(id, ledger) {
+async update(id, ledger) {
     await this.delay(300)
     const index = this.data.findIndex(l => l.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Ledger not found")
     }
-const updatedLedger = { ...ledger, Id: parseInt(id), currency: ledger.currency || "INR", customFields: ledger.customFields || {} }
+    
+    const oldLedger = { ...this.data[index] }
+    const updatedLedger = { ...ledger, Id: parseInt(id), currency: ledger.currency || "INR", customFields: ledger.customFields || {} }
     this.data[index] = updatedLedger
+    
+    // Log the update
+    await auditService.logOperation(
+      'ledger',
+      parseInt(id),
+      'update',
+      { name: updatedLedger.name, group: updatedLedger.group },
+      oldLedger,
+      updatedLedger
+    )
+    
     return { ...updatedLedger }
   }
 
-  async delete(id) {
+async delete(id) {
     await this.delay(250)
     const index = this.data.findIndex(l => l.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Ledger not found")
     }
+    
+    const deletedLedger = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'ledger',
+      parseInt(id),
+      'delete',
+      null,
+      deletedLedger,
+      null
+    )
+    
     return true
   }
 async getTopByBalance(limit = 10) {

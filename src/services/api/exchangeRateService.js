@@ -1,5 +1,6 @@
 import exchangeRatesData from "@/services/mockData/exchangeRates.json"
 import currencyService from "@/services/api/currencyService"
+import auditService from "@/services/api/auditService"
 
 class ExchangeRateService {
   constructor() {
@@ -92,8 +93,7 @@ class ExchangeRateService {
     if (!exchangeRate.date) {
       throw new Error("Date is required")
     }
-
-    const newId = Math.max(...this.data.map(r => r.Id)) + 1
+const newId = Math.max(...this.data.map(r => r.Id)) + 1
     const newRate = {
       ...exchangeRate,
       Id: newId,
@@ -103,6 +103,17 @@ class ExchangeRateService {
     }
     
     this.data.push(newRate)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'exchangeRate',
+      newId,
+      'create',
+      { fromCurrency: newRate.fromCurrency, toCurrency: newRate.toCurrency, rate: newRate.rate },
+      null,
+      newRate
+    )
+    
     return { ...newRate }
   }
 
@@ -128,23 +139,47 @@ class ExchangeRateService {
     if (!exchangeRate.rate || exchangeRate.rate <= 0) {
       throw new Error("Exchange rate must be greater than zero")
     }
-
+const oldRate = { ...this.data[index] }
     const updatedRate = { 
       ...exchangeRate, 
       Id: parseInt(id),
       rate: parseFloat(exchangeRate.rate)
     }
     this.data[index] = updatedRate
+    
+    // Log the update
+    await auditService.logOperation(
+      'exchangeRate',
+      parseInt(id),
+      'update',
+      { rate: updatedRate.rate },
+      oldRate,
+      updatedRate
+    )
+    
     return { ...updatedRate }
   }
 
-  async delete(id) {
+async delete(id) {
     await this.delay(250)
     const index = this.data.findIndex(r => r.Id === parseInt(id))
     if (index === -1) {
       throw new Error("Exchange rate not found")
     }
+    
+    const deletedRate = { ...this.data[index] }
     this.data.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'exchangeRate',
+      parseInt(id),
+      'delete',
+      null,
+      deletedRate,
+      null
+    )
+    
     return true
   }
 

@@ -14,6 +14,7 @@ import Masters from "@/components/pages/Masters";
 import CurrencyRateManager from "@/components/pages/CurrencyRateManager";
 import BankStatementImport from "@/components/pages/BankStatementImport";
 import NotificationManager from "@/components/pages/NotificationManager";
+import AuditLogs from "@/components/pages/AuditLogs";
 import Layout from "@/components/organisms/Layout";
 
 function App() {
@@ -32,8 +33,9 @@ return (
             <Route path="company-setup" element={<CompanySetup />} />
 <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
 <Route path="currency-rates" element={<CurrencyRateManager />} />
-            <Route path="notifications" element={<NotificationManager />} />
+<Route path="notifications" element={<NotificationManager />} />
             <Route path="bank-statements" element={<BankStatementImport />} />
+            <Route path="audit-logs" element={<AuditLogs />} />
             <Route path="voucher-details/:id" element={<VoucherDetails />} />
 </Route>
         </Routes>

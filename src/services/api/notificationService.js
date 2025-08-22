@@ -1,4 +1,7 @@
-import mockNotifications from '@/services/mockData/notifications.json'
+import auditService from "@/services/api/auditService";
+import React from "react";
+import mockNotifications from "@/services/mockData/notifications.json";
+import Error from "@/components/ui/Error";
 
 class NotificationService {
   constructor() {
@@ -18,7 +21,7 @@ class NotificationService {
     return Promise.resolve({ ...notification })
   }
 
-  create(notificationData) {
+async create(notificationData) {
     const newNotification = {
       ...notificationData,
       Id: this.nextId++,
@@ -27,15 +30,28 @@ class NotificationService {
     }
     
     this.notifications.unshift(newNotification)
+    
+    // Log the creation
+    await auditService.logOperation(
+      'notification',
+      newNotification.Id,
+      'create',
+      { title: newNotification.title, type: newNotification.type },
+      null,
+      newNotification
+    )
+    
     return Promise.resolve({ ...newNotification })
   }
 
-  update(id, data) {
+async update(id, data) {
+async update(id, data) {
     const index = this.notifications.findIndex(n => n.Id === parseInt(id))
     if (index === -1) {
       throw new Error(`Notification with ID ${id} not found`)
     }
     
+    const oldNotification = { ...this.notifications[index] }
     this.notifications[index] = {
       ...this.notifications[index],
       ...data,
@@ -43,16 +59,39 @@ class NotificationService {
       updatedAt: new Date().toISOString()
     }
     
+    // Log the update
+    await auditService.logOperation(
+      'notification',
+      parseInt(id),
+      'update',
+      data,
+      oldNotification,
+      this.notifications[index]
+    )
+    
     return Promise.resolve({ ...this.notifications[index] })
   }
 
-  delete(id) {
+async delete(id) {
+async delete(id) {
     const index = this.notifications.findIndex(n => n.Id === parseInt(id))
     if (index === -1) {
       throw new Error(`Notification with ID ${id} not found`)
     }
     
+    const deletedNotification = { ...this.notifications[index] }
     this.notifications.splice(index, 1)
+    
+    // Log the deletion
+    await auditService.logOperation(
+      'notification',
+      parseInt(id),
+      'delete',
+      null,
+      deletedNotification,
+      null
+    )
+    
     return Promise.resolve()
   }
 
