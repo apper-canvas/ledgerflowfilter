@@ -9,10 +9,12 @@ const Button = React.forwardRef(({ className, variant = "default", size = "defau
     secondary: "bg-secondary-500 text-white hover:bg-secondary-600",
     outline: "border border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
     ghost: "text-gray-700 hover:bg-gray-100",
-    link: "text-primary-700 underline-offset-4 hover:underline",
+link: "text-primary-700 underline-offset-4 hover:underline",
     success: "bg-success text-white hover:bg-green-600",
     warning: "bg-warning text-gray-900 hover:bg-yellow-400",
-    danger: "bg-error text-white hover:bg-red-600"
+    danger: "bg-error text-white hover:bg-red-600",
+    export: "bg-blue-600 text-white hover:bg-blue-700",
+    analytics: "bg-purple-600 text-white hover:bg-purple-700"
   }
   
   const sizes = {

@@ -167,6 +167,59 @@ async search(query, filters = {}) {
     return this.data.filter(ledger => ledger.isActive !== false)
   }
 
+async getFinancialRatios() {
+    await this.delay(200)
+    const assets = this.data.filter(l => l.group?.toLowerCase().includes('asset'))
+    const liabilities = this.data.filter(l => l.group?.toLowerCase().includes('liabil'))
+    const equity = this.data.filter(l => l.group?.toLowerCase().includes('capital') || l.group?.toLowerCase().includes('equity'))
+    
+    const totalAssets = assets.reduce((sum, l) => sum + (l.currentBalance || 0), 0)
+    const totalLiabilities = liabilities.reduce((sum, l) => sum + (l.currentBalance || 0), 0)
+    const totalEquity = equity.reduce((sum, l) => sum + (l.currentBalance || 0), 0)
+    
+    return {
+      debtToEquityRatio: totalEquity !== 0 ? totalLiabilities / totalEquity : 0,
+      currentRatio: totalLiabilities !== 0 ? totalAssets / totalLiabilities : 0,
+      equityRatio: totalAssets !== 0 ? totalEquity / totalAssets : 0,
+      totalAssets,
+      totalLiabilities,
+      totalEquity
+    }
+  }
+
+  async getAccountActivity(fromDate, toDate) {
+    await this.delay(200)
+    return this.data.map(ledger => ({
+      ...ledger,
+      activity: 'active', // Mock activity status
+      lastTransactionDate: new Date().toISOString().split('T')[0],
+      transactionCount: Math.floor(Math.random() * 50)
+    }))
+  }
+
+  async getAccountBalanceTrends(months = 6) {
+    await this.delay(200)
+    const trends = []
+    const topLedgers = this.data.slice(0, 10)
+    
+    for (let i = months - 1; i >= 0; i--) {
+      const date = new Date()
+      date.setMonth(date.getMonth() - i)
+      const monthKey = date.toISOString().slice(0, 7)
+      
+      trends.push({
+        month: date.toLocaleString('default', { month: 'short', year: 'numeric' }),
+        ledgers: topLedgers.map(ledger => ({
+          id: ledger.Id,
+          name: ledger.name,
+          balance: (ledger.currentBalance || 0) * (0.8 + Math.random() * 0.4) // Mock trend variation
+        }))
+      })
+    }
+    
+    return trends
+  }
+
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }

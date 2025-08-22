@@ -68,7 +68,31 @@ const DataTable = ({
       </div>
     )
   }
-return (
+const exportToCSV = () => {
+    if (!data || !data.length) return
+    
+    let csvContent = ""
+    const headers = columns.map(col => col.label).join(",")
+    csvContent += headers + "\n"
+    
+    data.forEach(row => {
+      const values = columns.map(col => {
+        const value = row[col.key]
+        return typeof value === 'string' ? `"${value}"` : (value || '')
+      }).join(",")
+      csvContent += values + "\n"
+    })
+    
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `data-export-${new Date().toISOString().split('T')[0]}.csv`
+    link.click()
+    window.URL.revokeObjectURL(url)
+  }
+
+  return (
     <div className={`space-y-4 ${className}`}>
       {/* Search Bar */}
       {searchable && (
@@ -79,8 +103,19 @@ return (
             placeholder="Search data..."
             className="w-72"
           />
-          <div className="text-sm text-gray-600">
-            Showing {paginatedData.length} of {sortedData.length} items
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={exportToCSV}
+              className="flex items-center"
+            >
+              <ApperIcon name="Download" className="w-4 h-4 mr-2" />
+              Export
+            </Button>
+            <div className="text-sm text-gray-600">
+              Showing {paginatedData.length} of {sortedData.length} items
+            </div>
           </div>
         </div>
       )}

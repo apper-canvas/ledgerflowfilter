@@ -27,8 +27,9 @@ return (
             <Route path="voucher-entry/:type?" element={<VoucherEntry />} />
 <Route path="masters/:section?" element={<Masters />} />
             <Route path="inventory" element={<Inventory />} />
-            <Route path="inventory/batch-serial" element={<BatchSerialManagement />} />
+<Route path="inventory/batch-serial" element={<BatchSerialManagement />} />
             <Route path="reports/:type?" element={<Reports />} />
+            <Route path="reports/analytics" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
             <Route path="company-setup" element={<CompanySetup />} />
 <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />

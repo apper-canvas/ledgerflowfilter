@@ -202,13 +202,13 @@ const Dashboard = () => {
     }
   ]
 
-  const reports = [
+const reports = [
     { label: "Trial Balance", path: "/reports/trial-balance", icon: "Scale" },
     { label: "P&L Statement", path: "/reports/profit-loss", icon: "TrendingUp" },
     { label: "Balance Sheet", path: "/reports/balance-sheet", icon: "FileBarChart" },
-    { label: "Day Book", path: "/reports/daybook", icon: "Calendar" }
+    { label: "Day Book", path: "/reports/daybook", icon: "Calendar" },
+    { label: "Analytics", path: "/reports/analytics", icon: "BarChart3" }
   ]
-
   // Chart configurations
   const monthlyTrendsOptions = {
     chart: {

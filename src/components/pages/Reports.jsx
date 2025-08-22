@@ -442,6 +442,132 @@ const generateDayBook = (vouchers) => {
                     </tbody>
                   </table>
                 </div>
+)}
+
+              {currentReport === "cash-flow" && (
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Cash Flow Statement</h3>
+                  <p className="text-sm text-gray-600 mb-6">
+                    From {new Date(filters.fromDate).toLocaleDateString()} to {new Date(filters.toDate).toLocaleDateString()}
+                  </p>
+                  
+                  {data[0] && (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-green-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-green-800">Operating Cash Flow</h4>
+                          <p className="text-2xl font-bold text-green-700">₹{data[0].operatingCashFlow?.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-blue-800">Investing Cash Flow</h4>
+                          <p className="text-2xl font-bold text-blue-700">₹{data[0].investingCashFlow?.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-purple-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-purple-800">Financing Cash Flow</h4>
+                          <p className="text-2xl font-bold text-purple-700">₹{data[0].financingCashFlow?.toLocaleString()}</p>
+                        </div>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <h4 className="font-medium text-gray-800">Net Cash Flow</h4>
+                        <p className={`text-3xl font-bold ${data[0].netCashFlow >= 0 ? 'text-green-700' : 'text-red-700'}`}>
+                          ₹{data[0].netCashFlow?.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {currentReport === "ratios" && (
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Financial Ratios</h3>
+                  
+                  {data[0] && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="bg-blue-50 p-6 rounded-lg">
+                        <h4 className="font-medium text-blue-800 mb-2">Debt-to-Equity Ratio</h4>
+                        <p className="text-3xl font-bold text-blue-700">{data[0].debtToEquityRatio?.toFixed(2)}</p>
+                        <p className="text-sm text-gray-600 mt-2">Lower is generally better</p>
+                      </div>
+                      <div className="bg-green-50 p-6 rounded-lg">
+                        <h4 className="font-medium text-green-800 mb-2">Current Ratio</h4>
+                        <p className="text-3xl font-bold text-green-700">{data[0].currentRatio?.toFixed(2)}</p>
+                        <p className="text-sm text-gray-600 mt-2">Above 1.0 is healthy</p>
+                      </div>
+                      <div className="bg-purple-50 p-6 rounded-lg">
+                        <h4 className="font-medium text-purple-800 mb-2">Equity Ratio</h4>
+                        <p className="text-3xl font-bold text-purple-700">{(data[0].equityRatio * 100)?.toFixed(1)}%</p>
+                        <p className="text-sm text-gray-600 mt-2">Higher indicates more equity financing</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {currentReport === "analytics" && (
+                <div className="space-y-8">
+                  <h3 className="text-lg font-medium mb-4">Financial Analytics Dashboard</h3>
+                  
+                  {data[0] && (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-6 rounded-lg">
+                          <h4 className="font-medium mb-2">Total Revenue</h4>
+                          <p className="text-2xl font-bold">₹{data[0].summary.totalRevenue?.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-6 rounded-lg">
+                          <h4 className="font-medium mb-2">Total Expenses</h4>
+                          <p className="text-2xl font-bold">₹{data[0].summary.totalExpenses?.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-green-500 to-green-600 text-white p-6 rounded-lg">
+                          <h4 className="font-medium mb-2">Net Profit</h4>
+                          <p className="text-2xl font-bold">₹{data[0].summary.netProfit?.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-6 rounded-lg">
+                          <h4 className="font-medium mb-2">Total Vouchers</h4>
+                          <p className="text-2xl font-bold">{data[0].summary.voucherCount}</p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="bg-white p-6 rounded-lg border">
+                          <h4 className="font-medium mb-4">Top Transactions</h4>
+                          <div className="space-y-3">
+                            {data[0].topTransactions?.slice(0, 5).map((transaction, idx) => (
+                              <div key={idx} className="flex justify-between items-center py-2 border-b last:border-b-0">
+                                <div>
+                                  <p className="font-medium capitalize">{transaction.type} #{transaction.number}</p>
+                                  <p className="text-sm text-gray-600">{new Date(transaction.date).toLocaleDateString()}</p>
+                                </div>
+                                <p className="font-bold">₹{transaction.totalAmount?.toLocaleString()}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="bg-white p-6 rounded-lg border">
+                          <h4 className="font-medium mb-4">Voucher Type Distribution</h4>
+                          <div className="space-y-2">
+                            {Object.entries(data[0].summary.voucherTypeCounts || {}).map(([type, count]) => (
+                              <div key={type} className="flex justify-between items-center">
+                                <span className="capitalize">{type}</span>
+                                <div className="flex items-center">
+                                  <div className="w-20 bg-gray-200 rounded-full h-2 mr-2">
+                                    <div 
+                                      className="bg-blue-600 h-2 rounded-full" 
+                                      style={{ width: `${(count / data[0].summary.voucherCount) * 100}%` }}
+                                    ></div>
+                                  </div>
+                                  <span className="font-medium">{count}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
 
               {data.length === 0 && !loading && (

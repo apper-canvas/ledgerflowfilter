@@ -218,6 +218,130 @@ async search(query, filters = {}) {
       .slice(0, limit)
   }
 
+async getCashFlowStatement(fromDate, toDate) {
+    await this.delay(300)
+    const filteredVouchers = this.data.filter(v => {
+      const voucherDate = new Date(v.date)
+      const from = new Date(fromDate)
+      const to = new Date(toDate)
+      return voucherDate >= from && voucherDate <= to
+    })
+
+    let operatingCashFlow = 0
+    let investingCashFlow = 0
+    let financingCashFlow = 0
+
+    filteredVouchers.forEach(voucher => {
+      if (voucher.entries) {
+        voucher.entries.forEach(entry => {
+          const amount = entry.amount || 0
+          if (voucher.type === 'sales' || voucher.type === 'receipt') {
+            operatingCashFlow += amount
+          } else if (voucher.type === 'purchase' || voucher.type === 'payment') {
+            if (voucher.narration?.toLowerCase().includes('equipment') || 
+                voucher.narration?.toLowerCase().includes('asset')) {
+              investingCashFlow -= amount
+            } else if (voucher.narration?.toLowerCase().includes('loan') || 
+                       voucher.narration?.toLowerCase().includes('capital')) {
+              financingCashFlow += voucher.type === 'receipt' ? amount : -amount
+            } else {
+              operatingCashFlow -= amount
+            }
+          }
+        })
+      }
+    })
+
+    return {
+      operatingCashFlow,
+      investingCashFlow,
+      financingCashFlow,
+      netCashFlow: operatingCashFlow + investingCashFlow + financingCashFlow
+    }
+  }
+
+  async getVarianceAnalysis(currentFromDate, currentToDate, previousFromDate, previousToDate) {
+    await this.delay(300)
+    const currentPeriod = await this.getAnalyticsSummary(currentFromDate, currentToDate)
+    const previousPeriod = await this.getAnalyticsSummary(previousFromDate, previousToDate)
+
+    return {
+      revenue: {
+        current: currentPeriod.totalRevenue,
+        previous: previousPeriod.totalRevenue,
+        variance: currentPeriod.totalRevenue - previousPeriod.totalRevenue,
+        variancePercent: previousPeriod.totalRevenue !== 0 ? 
+          ((currentPeriod.totalRevenue - previousPeriod.totalRevenue) / previousPeriod.totalRevenue) * 100 : 0
+      },
+      expenses: {
+        current: currentPeriod.totalExpenses,
+        previous: previousPeriod.totalExpenses,
+        variance: currentPeriod.totalExpenses - previousPeriod.totalExpenses,
+        variancePercent: previousPeriod.totalExpenses !== 0 ? 
+          ((currentPeriod.totalExpenses - previousPeriod.totalExpenses) / previousPeriod.totalExpenses) * 100 : 0
+      }
+    }
+  }
+
+  async getAnalyticsSummary(fromDate, toDate) {
+    await this.delay(200)
+    const filteredVouchers = this.data.filter(v => {
+      const voucherDate = new Date(v.date)
+      const from = new Date(fromDate)
+      const to = new Date(toDate)
+      return voucherDate >= from && voucherDate <= to
+    })
+
+    let totalRevenue = 0
+    let totalExpenses = 0
+    const voucherTypeCounts = {}
+
+    filteredVouchers.forEach(voucher => {
+      voucherTypeCounts[voucher.type] = (voucherTypeCounts[voucher.type] || 0) + 1
+      
+      if (voucher.entries) {
+        voucher.entries.forEach(entry => {
+          if (voucher.type === 'sales' || voucher.type === 'receipt') {
+            totalRevenue += entry.amount || 0
+          } else if (voucher.type === 'purchase' || voucher.type === 'payment') {
+            totalExpenses += entry.amount || 0
+          }
+        })
+      }
+    })
+
+    return {
+      totalRevenue,
+      totalExpenses,
+      netProfit: totalRevenue - totalExpenses,
+      voucherCount: filteredVouchers.length,
+      voucherTypeCounts
+    }
+  }
+
+  async getTopTransactions(limit = 10, fromDate, toDate) {
+    await this.delay(200)
+    let filteredVouchers = [...this.data]
+    
+    if (fromDate && toDate) {
+      filteredVouchers = filteredVouchers.filter(v => {
+        const voucherDate = new Date(v.date)
+        const from = new Date(fromDate)
+        const to = new Date(toDate)
+        return voucherDate >= from && voucherDate <= to
+      })
+    }
+
+    return filteredVouchers
+      .map(voucher => ({
+        ...voucher,
+        totalAmount: voucher.entries?.reduce((sum, entry) => 
+          sum + (entry.type === "dr" ? entry.amount : 0), 0) || 0
+      }))
+      .sort((a, b) => b.totalAmount - a.totalAmount)
+      .slice(0, limit)
+  }
+
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }

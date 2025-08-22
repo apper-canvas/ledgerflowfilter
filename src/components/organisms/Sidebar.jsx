@@ -44,12 +44,13 @@ children: [
       label: "Reports", 
       icon: "BarChart3", 
       shortcut: "Alt+R",
-      children: [
+children: [
         { path: "/reports/trial-balance", label: "Trial Balance" },
         { path: "/reports/profit-loss", label: "P&L Statement" },
         { path: "/reports/balance-sheet", label: "Balance Sheet" },
         { path: "/reports/ledger", label: "Ledger Report" },
-        { path: "/reports/daybook", label: "Day Book" }
+        { path: "/reports/daybook", label: "Day Book" },
+        { path: "/reports/analytics", label: "Financial Analytics" }
       ]
     },
     { path: "/settings", label: "Settings", icon: "Settings", shortcut: "Alt+S" }
