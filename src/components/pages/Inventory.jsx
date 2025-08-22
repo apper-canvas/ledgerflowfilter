@@ -125,9 +125,9 @@ const Inventory = () => {
       key: "openingStock", 
       label: "Opening Stock", 
       render: (value) => `${value?.quantity || 0} ${value?.unit || ""}`
-    },
+},
     { 
-      key: "openingStock", 
+      key: "stockValue", 
       label: "Stock Value", 
       render: (value) => `₹${(value?.value || 0).toFixed(2)}`
     }
