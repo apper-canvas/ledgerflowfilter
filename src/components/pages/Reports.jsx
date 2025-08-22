@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
-import VoucherDetails from "@/components/pages/VoucherDetails";
 import ledgerService from "@/services/api/ledgerService";
 import voucherService from "@/services/api/voucherService";
 import ApperIcon from "@/components/ApperIcon";
-import Error from "@/components/ui/Error";
-import Loading from "@/components/ui/Loading";
-import FormField from "@/components/molecules/FormField";
+import VoucherDetails from "@/components/pages/VoucherDetails";
 import Button from "@/components/atoms/Button";
+import FormField from "@/components/molecules/FormField";
+import Loading from "@/components/ui/Loading";
+import Error from "@/components/ui/Error";
 const Reports = () => {
   const { type } = useParams()
   const currentReport = type || "trial-balance"
@@ -23,16 +23,13 @@ const [data, setData] = useState([])
     toDate: new Date().toISOString().split("T")[0],
     ledgerId: ""
   })
-
-  const reports = [
-  const reports = [
+const reports = [
     { key: "trial-balance", label: "Trial Balance", icon: "Scale" },
     { key: "profit-loss", label: "P&L Statement", icon: "TrendingUp" },
     { key: "balance-sheet", label: "Balance Sheet", icon: "FileBarChart" },
     { key: "ledger", label: "Ledger Report", icon: "BookOpen" },
     { key: "daybook", label: "Day Book", icon: "Calendar" }
   ]
-
   useEffect(() => {
     if (currentReport) {
       generateReport()
@@ -455,11 +452,9 @@ const generateDayBook = (vouchers) => {
                 </div>
               )}
             </div>
-          )}
+)}
         </CardContent>
-</CardContent>
       </Card>
-
       {/* Voucher Details Modal */}
       {showVoucherModal && (
         <VoucherDetails
@@ -468,7 +463,8 @@ const generateDayBook = (vouchers) => {
           onClose={() => setShowVoucherModal(false)}
         />
       )}
-    </div>
+</div>
   )
+}
 
 export default Reports
