@@ -19,13 +19,13 @@ class VoucherService {
     if (!item) {
       throw new Error("Voucher not found")
     }
-    return { ...item }
 return { ...item }
   }
 
   async create(voucher) {
     await this.delay(400)
     const newId = Math.max(...this.data.map(v => v.Id)) + 1
+    const newVoucher = {
       ...voucher,
       Id: newId,
       status: "posted",
@@ -67,16 +67,15 @@ return { ...item }
       updatedVoucher
     )
     
-    return { ...updatedVoucher }
 return { ...updatedVoucher }
   }
 
   async delete(id) {
-    await this.delay(300)
+await this.delay(300)
     const index = this.data.findIndex(v => v.Id === parseInt(id))
+    if (index === -1) {
       throw new Error("Voucher not found")
     }
-    
     const deletedVoucher = { ...this.data[index] }
     this.data.splice(index, 1)
     
@@ -296,8 +295,8 @@ filteredVouchers.forEach(voucher => {
     let totalExpenses = 0
     const voucherTypeCounts = {}
 
-    filteredVouchers.forEach(voucher => {
-voucherTypeCounts[voucher.type] = (voucherTypeCounts[voucher.type] || 0) + 1
+filteredVouchers.forEach(voucher => {
+      voucherTypeCounts[voucher.type] = (voucherTypeCounts[voucher.type] || 0) + 1
       
       if (voucher.entries) {
         voucher.entries.forEach(entry => {
