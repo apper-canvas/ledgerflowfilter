@@ -54,9 +54,8 @@ return (
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        style={{ zIndex: 9999 }}
+style={{ zIndex: 9999 }}
       />
-/>
     </AuthProvider>
   );
 }
