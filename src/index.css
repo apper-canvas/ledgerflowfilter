@@ -143,9 +143,6 @@ input:focus, select:focus, textarea:focus, button:focus {
 .statement-match-low {
   @apply bg-red-100 text-red-800 border-red-200;
 }
-.statement-match-low {
-  @apply bg-red-100 text-red-800 border-red-200;
-}
 
 .statement-import-drop-zone {
   @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors;
