@@ -1,7 +1,5 @@
 import auditService from "@/services/api/auditService";
-import React from "react";
 import mockNotifications from "@/services/mockData/notifications.json";
-import Error from "@/components/ui/Error";
 
 class NotificationService {
   constructor() {
@@ -45,7 +43,6 @@ async create(notificationData) {
   }
 
 async update(id, data) {
-async update(id, data) {
     const index = this.notifications.findIndex(n => n.Id === parseInt(id))
     if (index === -1) {
       throw new Error(`Notification with ID ${id} not found`)
@@ -72,7 +69,6 @@ async update(id, data) {
     return Promise.resolve({ ...this.notifications[index] })
   }
 
-async delete(id) {
 async delete(id) {
     const index = this.notifications.findIndex(n => n.Id === parseInt(id))
     if (index === -1) {
