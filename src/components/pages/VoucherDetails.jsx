@@ -2,8 +2,6 @@ import React from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card"
 import Button from "@/components/atoms/Button"
 import ApperIcon from "@/components/ApperIcon"
-import { formatCurrency } from "@/utils/formatters"
-
 const VoucherDetails = ({ vouchers, onClose, title = "Voucher Details" }) => {
   if (!vouchers || vouchers.length === 0) {
     return (
