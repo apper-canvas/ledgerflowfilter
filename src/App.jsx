@@ -9,6 +9,7 @@ import Inventory from "@/components/pages/Inventory"
 import Reports from "@/components/pages/Reports"
 import Settings from "@/components/pages/Settings"
 import CompanySetup from "@/components/pages/CompanySetup"
+import CustomFieldDesigner from "@/components/pages/CustomFieldDesigner"
 
 function App() {
   return (
@@ -21,8 +22,9 @@ function App() {
             <Route path="masters/:section?" element={<Masters />} />
             <Route path="inventory" element={<Inventory />} />
             <Route path="reports/:type?" element={<Reports />} />
-            <Route path="settings" element={<Settings />} />
+<Route path="settings" element={<Settings />} />
             <Route path="company-setup" element={<CompanySetup />} />
+            <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
           </Route>
         </Routes>
       </Router>

@@ -22,10 +22,11 @@ class VoucherService {
   async create(voucher) {
     await this.delay(400)
     const newId = Math.max(...this.data.map(v => v.Id)) + 1
-    const newVoucher = {
+const newVoucher = {
       ...voucher,
       Id: newId,
-      status: "posted"
+      status: "posted",
+      customFields: voucher.customFields || {}
     }
     this.data.push(newVoucher)
     return { ...newVoucher }
@@ -37,7 +38,7 @@ class VoucherService {
     if (index === -1) {
       throw new Error("Voucher not found")
     }
-    const updatedVoucher = { ...voucher, Id: parseInt(id) }
+const updatedVoucher = { ...voucher, Id: parseInt(id), customFields: voucher.customFields || {} }
     this.data[index] = updatedVoucher
     return { ...updatedVoucher }
   }

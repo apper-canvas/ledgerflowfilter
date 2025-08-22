@@ -1,0 +1,109 @@
+[
+  {
+    "Id": 1,
+    "name": "customerReference",
+    "label": "Customer Reference",
+    "type": "text",
+    "entityType": "voucher",
+    "required": false,
+    "description": "Customer's internal reference number for this transaction",
+    "validation": {
+      "type": "text",
+      "max": 50
+    },
+    "placeholder": "Enter customer reference",
+    "helpText": "Optional reference provided by customer",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "Id": 2,
+    "name": "projectCode",
+    "label": "Project Code",
+    "type": "select",
+    "entityType": "all",
+    "required": false,
+    "description": "Project or job code for tracking expenses",
+    "options": [
+      { "value": "PROJ001", "label": "Office Renovation" },
+      { "value": "PROJ002", "label": "Marketing Campaign" },
+      { "value": "PROJ003", "label": "Software Development" },
+      { "value": "PROJ004", "label": "Training Program" }
+    ],
+    "placeholder": "Select project",
+    "helpText": "Choose the relevant project for expense allocation",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "Id": 3,
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "entityType": "voucher",
+    "required": false,
+    "description": "Transaction priority level",
+    "options": [
+      { "value": "low", "label": "Low" },
+      { "value": "medium", "label": "Medium" },
+      { "value": "high", "label": "High" },
+      { "value": "urgent", "label": "Urgent" }
+    ],
+    "placeholder": "Select priority",
+    "helpText": "Set priority for processing this transaction",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "Id": 4,
+    "name": "creditLimit",
+    "label": "Credit Limit",
+    "type": "number",
+    "entityType": "ledger",
+    "required": false,
+    "description": "Maximum credit limit for customer ledgers",
+    "validation": {
+      "type": "number",
+      "min": 0,
+      "max": 10000000
+    },
+    "placeholder": "Enter credit limit",
+    "helpText": "Set maximum credit limit (leave blank for unlimited)",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "Id": 5,
+    "name": "contactEmail",
+    "label": "Contact Email",
+    "type": "email",
+    "entityType": "ledger",
+    "required": false,
+    "description": "Primary contact email for this ledger",
+    "validation": {
+      "type": "email"
+    },
+    "placeholder": "Enter email address",
+    "helpText": "Primary email for communication and statements",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  },
+  {
+    "Id": 6,
+    "name": "dueDays",
+    "label": "Payment Due Days",
+    "type": "number",
+    "entityType": "ledger",
+    "required": false,
+    "description": "Default payment terms in days",
+    "validation": {
+      "type": "number",
+      "min": 0,
+      "max": 365
+    },
+    "placeholder": "Enter days",
+    "helpText": "Standard payment terms (0 for immediate payment)",
+    "createdAt": "2024-01-01T00:00:00Z",
+    "updatedAt": "2024-01-01T00:00:00Z"
+  }
+]

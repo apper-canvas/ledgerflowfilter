@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react"
-import { toast } from "react-toastify"
-import FormField from "@/components/molecules/FormField"
-import Button from "@/components/atoms/Button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card"
-import ApperIcon from "@/components/ApperIcon"
-import voucherService from "@/services/api/voucherService"
-import ledgerService from "@/services/api/ledgerService"
-import stockItemService from "@/services/api/stockItemService"
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
+import customFieldService from "@/services/api/customFieldService";
+import CustomFieldRenderer from "@/components/molecules/CustomFieldRenderer";
+import stockItemService from "@/services/api/stockItemService";
+import ledgerService from "@/services/api/ledgerService";
+import voucherService from "@/services/api/voucherService";
+import ApperIcon from "@/components/ApperIcon";
+import FormField from "@/components/molecules/FormField";
+import Button from "@/components/atoms/Button";
 
 const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
   const [voucher, setVoucher] = useState({
@@ -26,8 +28,11 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
     }
   })
 
-  const [ledgers, setLedgers] = useState([])
+const [ledgers, setLedgers] = useState([])
   const [stockItems, setStockItems] = useState([])
+  const [customFields, setCustomFields] = useState([])
+  const [customFieldValues, setCustomFieldValues] = useState({})
+  const [customFieldErrors, setCustomFieldErrors] = useState({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -40,14 +45,16 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
     }
   }, [type, voucherId])
 
-  const loadData = async () => {
+const loadData = async () => {
     try {
-      const [ledgersData, stockData] = await Promise.all([
+      const [ledgersData, stockData, customFieldsData] = await Promise.all([
         ledgerService.getAll(),
-        stockItemService.getAll()
+        stockItemService.getAll(),
+        customFieldService.getByEntity('voucher')
       ])
-      setLedgers(ledgersData)
+setLedgers(ledgersData)
       setStockItems(stockData)
+      setCustomFields(customFieldsData)
     } catch (error) {
       toast.error("Failed to load data")
     } finally {
@@ -56,9 +63,10 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
   }
 
   const loadVoucher = async (id) => {
-    try {
+try {
       const data = await voucherService.getById(id)
       setVoucher(data)
+      setCustomFieldValues(data.customFields || {})
     } catch (error) {
       toast.error("Failed to load voucher")
     }
@@ -145,7 +153,7 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
       .reduce((sum, entry) => sum + parseFloat(entry.amount || 0), 0)
   }
 
-  const handleSave = async () => {
+const handleSave = async () => {
     const totalDebit = getTotalDebit()
     const totalCredit = getTotalCredit()
 
@@ -154,6 +162,23 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
       return
     }
 
+    // Validate custom fields
+    const fieldErrors = {}
+    for (const field of customFields) {
+      const error = customFieldService.validateFieldValue(field, customFieldValues[field.name])
+      if (error) {
+        fieldErrors[field.name] = error
+      }
+    }
+    
+    if (Object.keys(fieldErrors).length > 0) {
+      setCustomFieldErrors(fieldErrors)
+      toast.error("Please fix the custom field errors")
+      return
+    }
+    
+    setCustomFieldErrors({})
+
     if (voucher.entries.some(entry => !entry.ledgerId || entry.amount <= 0)) {
       toast.error("All entries must have a ledger and amount")
       return
@@ -161,15 +186,15 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
 
     setSaving(true)
     try {
-      const voucherData = {
+const voucherData = {
         ...voucher,
+        customFields: customFieldValues,
         entries: voucher.entries.map(entry => ({
           ...entry,
           ledgerId: parseInt(entry.ledgerId),
           amount: parseFloat(entry.amount)
         }))
       }
-
       if (voucherId) {
         await voucherService.update(voucherId, voucherData)
         toast.success("Voucher updated successfully")
@@ -180,7 +205,7 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
 
       if (onSave) onSave()
       
-      // Reset form for new entry
+// Reset form for new entry
       if (!voucherId) {
         setVoucher({
           type,
@@ -193,6 +218,7 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
           ],
           gstDetails: { cgst: 0, sgst: 0, igst: 0, totalTax: 0 }
         })
+        setCustomFieldValues({})
         generateVoucherNumber()
       }
     } catch (error) {
@@ -363,7 +389,18 @@ const VoucherForm = ({ type = "journal", voucherId = null, onSave }) => {
           onChange={(e) => setVoucher(prev => ({ ...prev, narration: e.target.value }))}
           placeholder="Enter voucher narration..."
           className="min-h-[80px]"
-        />
+/>
+
+        {/* Custom Fields */}
+        {customFields.length > 0 && (
+          <CustomFieldRenderer
+            customFields={customFields}
+            fieldValues={customFieldValues}
+            onChange={setCustomFieldValues}
+            errors={customFieldErrors}
+            className="border-t pt-6"
+          />
+        )}
 
         <div className="flex justify-between items-center pt-6 border-t">
           <div className="text-sm text-gray-600">

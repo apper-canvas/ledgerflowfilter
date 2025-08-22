@@ -1,24 +1,29 @@
-import React, { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card"
-import Button from "@/components/atoms/Button"
-import FormField from "@/components/molecules/FormField"
-import SearchBar from "@/components/molecules/SearchBar"
-import DataTable from "@/components/organisms/DataTable"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import Empty from "@/components/ui/Empty"
-import ApperIcon from "@/components/ApperIcon"
-import { toast } from "react-toastify"
-import ledgerService from "@/services/api/ledgerService"
-import groupService from "@/services/api/groupService"
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
+import { toast } from "react-toastify";
+import customFieldService from "@/services/api/customFieldService";
+import CustomFieldRenderer from "@/components/molecules/CustomFieldRenderer";
+import ledgerService from "@/services/api/ledgerService";
+import groupService from "@/services/api/groupService";
+import ApperIcon from "@/components/ApperIcon";
+import DataTable from "@/components/organisms/DataTable";
+import Error from "@/components/ui/Error";
+import Empty from "@/components/ui/Empty";
+import Loading from "@/components/ui/Loading";
+import FormField from "@/components/molecules/FormField";
+import SearchBar from "@/components/molecules/SearchBar";
+import Button from "@/components/atoms/Button";
 
 const Masters = () => {
   const { section } = useParams()
   const currentSection = section || "ledgers"
   
-  const [data, setData] = useState([])
+const [data, setData] = useState([])
   const [groups, setGroups] = useState([])
+  const [customFields, setCustomFields] = useState([])
+  const [customFieldValues, setCustomFieldValues] = useState({})
+  const [customFieldErrors, setCustomFieldErrors] = useState({})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState("")
@@ -27,9 +32,10 @@ const Masters = () => {
   const [formData, setFormData] = useState({})
 
   useEffect(() => {
-    loadData()
+loadData()
     if (currentSection === "ledgers") {
       loadGroups()
+      loadCustomFields()
     }
   }, [currentSection])
 
@@ -64,32 +70,66 @@ const Masters = () => {
     } catch (err) {
       console.error("Failed to load groups:", err)
     }
+}
+
+  const loadCustomFields = async () => {
+    try {
+      const fieldsData = await customFieldService.getByEntity('ledger')
+      setCustomFields(fieldsData)
+    } catch (err) {
+      console.error("Failed to load custom fields:", err)
+    }
   }
 
-  const handleSave = async () => {
+const handleSave = async () => {
     try {
+      // Validate custom fields for ledgers
+      if (currentSection === "ledgers") {
+        const fieldErrors = {}
+        for (const field of customFields) {
+          const error = customFieldService.validateFieldValue(field, customFieldValues[field.name])
+          if (error) {
+            fieldErrors[field.name] = error
+          }
+        }
+        
+        if (Object.keys(fieldErrors).length > 0) {
+          setCustomFieldErrors(fieldErrors)
+          toast.error("Please fix the custom field errors")
+          return
+        }
+        
+        setCustomFieldErrors({})
+      }
+
+      const dataToSave = currentSection === "ledgers" 
+        ? { ...formData, customFields: customFieldValues }
+        : formData
+
       if (editingItem) {
         await (currentSection === "ledgers" ? ledgerService : groupService)
-          .update(editingItem.Id, formData)
+          .update(editingItem.Id, dataToSave)
         toast.success(`${currentSection.slice(0, -1)} updated successfully`)
       } else {
         await (currentSection === "ledgers" ? ledgerService : groupService)
-          .create(formData)
+          .create(dataToSave)
         toast.success(`${currentSection.slice(0, -1)} created successfully`)
       }
       
       setShowForm(false)
       setEditingItem(null)
       setFormData({})
+      setCustomFieldValues({})
       loadData()
     } catch (err) {
       toast.error("Failed to save data")
     }
   }
 
-  const handleEdit = (item) => {
+const handleEdit = (item) => {
     setEditingItem(item)
     setFormData(item)
+    setCustomFieldValues(item.customFields || {})
     setShowForm(true)
   }
 
@@ -108,10 +148,12 @@ const Masters = () => {
     }
   }
 
-  const resetForm = () => {
+const resetForm = () => {
     setShowForm(false)
     setEditingItem(null)
     setFormData({})
+    setCustomFieldValues({})
+    setCustomFieldErrors({})
   }
 
   const filteredData = data.filter(item => 
@@ -122,10 +164,10 @@ const Masters = () => {
   const sections = [
     { key: "ledgers", label: "Ledgers", icon: "BookOpen" },
     { key: "groups", label: "Groups", icon: "FolderOpen" },
+    { key: "custom-fields", label: "Custom Fields", icon: "Settings2" },
     { key: "cost-centers", label: "Cost Centers", icon: "Target" },
     { key: "currencies", label: "Currencies", icon: "DollarSign" }
   ]
-
   const ledgerColumns = [
     { key: "name", label: "Name" },
     { key: "group", label: "Group" },
@@ -306,7 +348,18 @@ const Masters = () => {
                     value={formData.parent || ""}
                     onChange={(e) => setFormData({...formData, parent: e.target.value})}
                   />
-                </>
+</>
+              )}
+
+              {/* Custom Fields for Ledgers */}
+              {currentSection === "ledgers" && customFields.length > 0 && (
+                <CustomFieldRenderer
+                  customFields={customFields}
+                  fieldValues={customFieldValues}
+                  onChange={setCustomFieldValues}
+                  errors={customFieldErrors}
+                  className="border-t pt-4"
+                />
               )}
               
               <div className="flex justify-end space-x-3 pt-4">

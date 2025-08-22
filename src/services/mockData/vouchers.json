@@ -35,9 +35,14 @@
       "cgst": 900.00,
       "sgst": 900.00,
       "igst": 0.00,
-      "totalTax": 1800.00
+"totalTax": 1800.00
     },
-    "status": "posted"
+    "status": "posted",
+    "customFields": {
+      "customerReference": "CRF-2024-001",
+      "projectCode": "PROJ002",
+      "priority": "high"
+    }
   },
   {
     "Id": 2,
@@ -75,9 +80,12 @@
       "cgst": 450.00,
       "sgst": 450.00,
       "igst": 0.00,
-      "totalTax": 900.00
+"totalTax": 900.00
     },
-    "status": "posted"
+    "status": "posted",
+    "customFields": {
+      "projectCode": "PROJ001"
+    }
   },
   {
     "Id": 3,
@@ -103,9 +111,10 @@
       "cgst": 0.00,
       "sgst": 0.00,
       "igst": 0.00,
-      "totalTax": 0.00
+"totalTax": 0.00
     },
-    "status": "posted"
+    "status": "posted",
+    "customFields": {}
   },
   {
     "Id": 4,
@@ -131,8 +140,11 @@
       "cgst": 0.00,
       "sgst": 0.00,
       "igst": 0.00,
-      "totalTax": 0.00
+"totalTax": 0.00
     },
-    "status": "posted"
+    "status": "posted",
+    "customFields": {
+      "customerReference": "PAY-2024-001"
+    }
   }
 ]

@@ -28,8 +28,9 @@ const Sidebar = ({ isOpen, onClose }) => {
       icon: "Database", 
       shortcut: "Alt+M",
       children: [
-        { path: "/masters/ledgers", label: "Ledgers" },
+{ path: "/masters/ledgers", label: "Ledgers" },
         { path: "/masters/groups", label: "Groups" },
+        { path: "/masters/custom-fields", label: "Custom Fields" },
         { path: "/masters/cost-centers", label: "Cost Centers" },
         { path: "/masters/currencies", label: "Currencies" }
       ]
