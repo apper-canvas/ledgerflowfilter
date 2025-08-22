@@ -144,9 +144,9 @@ class BankStatementService {
 
         // Parse date
         let date = new Date(row.date)
-        if (isNaN(date.getTime())) {
+if (isNaN(date.getTime())) {
           // Try different date formats
-          const parts = row.date.split(/[-\/]/)
+          const parts = row.date.split(/[-/]/)
           if (parts.length === 3) {
             date = new Date(parts[2], parts[1] - 1, parts[0]) // DD/MM/YYYY
           }
