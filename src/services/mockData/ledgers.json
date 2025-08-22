@@ -5,6 +5,7 @@
     "group": "Current Assets",
 "openingBalance": 50000.00,
     "currentBalance": 75000.00,
+    "currency": "INR",
     "gstApplicable": false,
     "customFields": {}
   },
@@ -14,6 +15,7 @@
     "group": "Current Assets",
 "openingBalance": 100000.00,
     "currentBalance": 150000.00,
+    "currency": "INR",
     "gstApplicable": false,
     "customFields": {}
   },
@@ -23,6 +25,7 @@
     "group": "Income",
 "openingBalance": 0.00,
     "currentBalance": -500000.00,
+    "currency": "INR",
     "gstApplicable": true,
     "customFields": {}
   },
@@ -32,6 +35,7 @@
     "group": "Expenses",
 "openingBalance": 0.00,
     "currentBalance": 300000.00,
+    "currency": "INR",
     "gstApplicable": true,
     "customFields": {}
   },
@@ -41,6 +45,7 @@
     "group": "Current Liabilities",
 "openingBalance": -25000.00,
     "currentBalance": -30000.00,
+    "currency": "USD",
     "gstApplicable": true,
     "customFields": {
       "contactEmail": "vendor@abcsuppliers.com",
@@ -53,6 +58,7 @@
     "group": "Current Assets",
 "openingBalance": 35000.00,
     "currentBalance": 45000.00,
+    "currency": "EUR",
     "gstApplicable": true,
     "customFields": {
       "contactEmail": "finance@xyzcustomers.com",
@@ -66,6 +72,7 @@
     "group": "Expenses",
 "openingBalance": 0.00,
     "currentBalance": 36000.00,
+    "currency": "INR",
     "gstApplicable": false,
     "customFields": {}
   },
@@ -75,6 +82,7 @@
     "group": "Current Liabilities",
 "openingBalance": 0.00,
     "currentBalance": -15000.00,
+    "currency": "INR",
     "gstApplicable": false,
     "customFields": {}
   },
@@ -84,6 +92,7 @@
     "group": "Current Liabilities",
 "openingBalance": 0.00,
     "currentBalance": -15000.00,
+    "currency": "INR",
     "gstApplicable": false,
     "customFields": {}
   },
@@ -93,6 +102,7 @@
     "group": "Capital",
 "openingBalance": -200000.00,
     "currentBalance": -200000.00,
+    "currency": "INR",
     "gstApplicable": false,
     "customFields": {}
   }

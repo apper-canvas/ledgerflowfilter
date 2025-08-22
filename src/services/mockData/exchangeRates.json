@@ -1,0 +1,119 @@
+[
+  {
+    "Id": 1,
+    "fromCurrency": "USD",
+    "toCurrency": "INR",
+    "rate": 83.25,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 2,
+    "fromCurrency": "EUR",
+    "toCurrency": "INR",
+    "rate": 90.45,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 3,
+    "fromCurrency": "GBP",
+    "toCurrency": "INR",
+    "rate": 105.75,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 4,
+    "fromCurrency": "USD",
+    "toCurrency": "INR",
+    "rate": 83.15,
+    "date": "2024-01-10",
+    "createdAt": "2024-01-10T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 5,
+    "fromCurrency": "EUR",
+    "toCurrency": "INR",
+    "rate": 90.20,
+    "date": "2024-01-10",
+    "createdAt": "2024-01-10T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 6,
+    "fromCurrency": "JPY",
+    "toCurrency": "INR",
+    "rate": 0.56,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 7,
+    "fromCurrency": "AUD",
+    "toCurrency": "INR",
+    "rate": 55.80,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 8,
+    "fromCurrency": "CAD",
+    "toCurrency": "INR",
+    "rate": 61.45,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 9,
+    "fromCurrency": "CHF",
+    "toCurrency": "INR",
+    "rate": 95.30,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 10,
+    "fromCurrency": "CNY",
+    "toCurrency": "INR",
+    "rate": 11.65,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 11,
+    "fromCurrency": "SGD",
+    "toCurrency": "INR",
+    "rate": 62.10,
+    "date": "2024-01-15",
+    "createdAt": "2024-01-15T10:30:00Z",
+    "createdBy": "System"
+  },
+  {
+    "Id": 12,
+    "fromCurrency": "USD",
+    "toCurrency": "INR",
+    "rate": 83.45,
+    "date": "2024-01-20",
+    "createdAt": "2024-01-20T10:30:00Z",
+    "createdBy": "Admin"
+  },
+  {
+    "Id": 13,
+    "fromCurrency": "EUR",
+    "toCurrency": "INR",
+    "rate": 90.85,
+    "date": "2024-01-20",
+    "createdAt": "2024-01-20T10:30:00Z",
+    "createdBy": "Admin"
+  }
+]

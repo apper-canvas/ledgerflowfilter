@@ -26,6 +26,7 @@ const newLedger = {
       ...ledger,
       Id: newId,
       currentBalance: ledger.openingBalance || 0,
+      currency: ledger.currency || "INR",
       customFields: ledger.customFields || {}
     }
     this.data.push(newLedger)
@@ -38,7 +39,7 @@ const newLedger = {
     if (index === -1) {
       throw new Error("Ledger not found")
     }
-const updatedLedger = { ...ledger, Id: parseInt(id), customFields: ledger.customFields || {} }
+const updatedLedger = { ...ledger, Id: parseInt(id), currency: ledger.currency || "INR", customFields: ledger.customFields || {} }
     this.data[index] = updatedLedger
     return { ...updatedLedger }
   }

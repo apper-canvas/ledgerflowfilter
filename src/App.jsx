@@ -11,6 +11,7 @@ import Dashboard from "@/components/pages/Dashboard";
 import BatchSerialManagement from "@/components/pages/BatchSerialManagement";
 import Reports from "@/components/pages/Reports";
 import Masters from "@/components/pages/Masters";
+import CurrencyRateManager from "@/components/pages/CurrencyRateManager";
 import Layout from "@/components/organisms/Layout";
 
 function App() {
@@ -28,6 +29,7 @@ return (
             <Route path="settings" element={<Settings />} />
             <Route path="company-setup" element={<CompanySetup />} />
 <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
+            <Route path="currency-rates" element={<CurrencyRateManager />} />
             <Route path="voucher-details/:id" element={<VoucherDetails />} />
 </Route>
         </Routes>

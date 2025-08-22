@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
 import { toast } from "react-toastify";
-import customFieldService from "@/services/api/customFieldService";
-import CustomFieldRenderer from "@/components/molecules/CustomFieldRenderer";
+import currencyService from "@/services/api/currencyService";
 import ledgerService from "@/services/api/ledgerService";
+import customFieldService from "@/services/api/customFieldService";
 import groupService from "@/services/api/groupService";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import SearchBar from "@/components/molecules/SearchBar";
+import FormField from "@/components/molecules/FormField";
+import CustomFieldRenderer from "@/components/molecules/CustomFieldRenderer";
 import DataTable from "@/components/organisms/DataTable";
-import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import Loading from "@/components/ui/Loading";
-import FormField from "@/components/molecules/FormField";
-import SearchBar from "@/components/molecules/SearchBar";
-import Button from "@/components/atoms/Button";
+import Error from "@/components/ui/Error";
 
 const Masters = () => {
   const { section } = useParams()
@@ -21,6 +22,7 @@ const Masters = () => {
   
 const [data, setData] = useState([])
   const [groups, setGroups] = useState([])
+  const [currencies, setCurrencies] = useState([])
   const [customFields, setCustomFields] = useState([])
   const [customFieldValues, setCustomFieldValues] = useState({})
   const [customFieldErrors, setCustomFieldErrors] = useState({})
@@ -31,11 +33,15 @@ const [data, setData] = useState([])
   const [editingItem, setEditingItem] = useState(null)
   const [formData, setFormData] = useState({})
 
-  useEffect(() => {
-loadData()
+useEffect(() => {
+    loadData()
     if (currentSection === "ledgers") {
       loadGroups()
       loadCustomFields()
+      loadCurrencies()
+    }
+    if (currentSection === "currencies") {
+      // No additional data needed for currencies
     }
   }, [currentSection])
 
@@ -44,12 +50,15 @@ loadData()
       setError(null)
       let result = []
       
-      switch (currentSection) {
+switch (currentSection) {
         case "ledgers":
           result = await ledgerService.getAll()
           break
         case "groups":
           result = await groupService.getAll()
+          break
+        case "currencies":
+          result = await currencyService.getAll()
           break
         default:
           result = []
@@ -81,6 +90,15 @@ loadData()
     }
   }
 
+  const loadCurrencies = async () => {
+    try {
+      const currencyData = await currencyService.getAll()
+      setCurrencies(currencyData)
+    } catch (err) {
+      console.error("Failed to load currencies:", err)
+    }
+  }
+
 const handleSave = async () => {
     try {
       // Validate custom fields for ledgers
@@ -106,13 +124,26 @@ const handleSave = async () => {
         ? { ...formData, customFields: customFieldValues }
         : formData
 
+let service
+      switch (currentSection) {
+        case "ledgers":
+          service = ledgerService
+          break
+        case "groups":
+          service = groupService
+          break
+        case "currencies":
+          service = currencyService
+          break
+        default:
+          throw new Error("Unknown section")
+      }
+
       if (editingItem) {
-        await (currentSection === "ledgers" ? ledgerService : groupService)
-          .update(editingItem.Id, dataToSave)
+        await service.update(editingItem.Id, dataToSave)
         toast.success(`${currentSection.slice(0, -1)} updated successfully`)
       } else {
-        await (currentSection === "ledgers" ? ledgerService : groupService)
-          .create(dataToSave)
+        await service.create(dataToSave)
         toast.success(`${currentSection.slice(0, -1)} created successfully`)
       }
       
@@ -138,9 +169,23 @@ const handleEdit = (item) => {
       return
     }
 
-    try {
-      await (currentSection === "ledgers" ? ledgerService : groupService)
-        .delete(item.Id)
+try {
+      let service
+      switch (currentSection) {
+        case "ledgers":
+          service = ledgerService
+          break
+        case "groups":
+          service = groupService
+          break
+        case "currencies":
+          service = currencyService
+          break
+        default:
+          throw new Error("Unknown section")
+      }
+
+      await service.delete(item.Id)
       toast.success(`${currentSection.slice(0, -1)} deleted successfully`)
       loadData()
     } catch (err) {
@@ -168,22 +213,31 @@ const resetForm = () => {
     { key: "cost-centers", label: "Cost Centers", icon: "Target" },
     { key: "currencies", label: "Currencies", icon: "DollarSign" }
   ]
-  const ledgerColumns = [
+const ledgerColumns = [
     { key: "name", label: "Name" },
     { key: "group", label: "Group" },
+    { key: "currency", label: "Currency" },
     { 
       key: "openingBalance", 
       label: "Opening Balance", 
-      render: (value) => `₹${value?.toFixed(2) || "0.00"}`
+      render: (value, row) => {
+        const currency = currencies.find(c => c.code === row.currency)
+        const symbol = currency ? currency.symbol : '₹'
+        return `${symbol}${value?.toFixed(2) || "0.00"}`
+      }
     },
     {
       key: "currentBalance",
       label: "Current Balance", 
-      render: (value) => (
-        <span className={value >= 0 ? "text-green-600" : "text-red-600"}>
-          ₹{value?.toFixed(2) || "0.00"}
-        </span>
-      )
+      render: (value, row) => {
+        const currency = currencies.find(c => c.code === row.currency)
+        const symbol = currency ? currency.symbol : '₹'
+        return (
+          <span className={value >= 0 ? "text-green-600" : "text-red-600"}>
+            {symbol}{value?.toFixed(2) || "0.00"}
+          </span>
+        )
+      }
     },
     { 
       key: "gstApplicable", 
@@ -198,6 +252,40 @@ const resetForm = () => {
     { key: "parent", label: "Parent Group" }
   ]
 
+  const currencyColumns = [
+    { key: "code", label: "Code" },
+    { key: "name", label: "Name" },
+    { key: "symbol", label: "Symbol" },
+    { 
+      key: "isBaseCurrency", 
+      label: "Base Currency", 
+      render: (value) => value ? "Yes" : "No"
+    },
+    { 
+      key: "isActive", 
+      label: "Status", 
+      render: (value) => (
+        <span className={`px-2 py-1 rounded-full text-xs ${
+          value ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+        }`}>
+          {value ? "Active" : "Inactive"}
+        </span>
+      )
+    }
+  ]
+
+  const getColumns = () => {
+    switch (currentSection) {
+      case "ledgers":
+        return ledgerColumns
+      case "groups":
+        return groupColumns
+      case "currencies":
+        return currencyColumns
+      default:
+        return []
+    }
+  }
   if (loading) return <Loading rows={4} />
   if (error) return <Error message={error} onRetry={loadData} />
 
@@ -254,9 +342,9 @@ const resetForm = () => {
         
         <CardContent>
           {filteredData.length > 0 ? (
-            <DataTable
+<DataTable
               data={filteredData}
-              columns={currentSection === "ledgers" ? ledgerColumns : groupColumns}
+              columns={getColumns()}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />
@@ -283,7 +371,7 @@ const resetForm = () => {
             </CardHeader>
             
             <CardContent className="space-y-4">
-              {currentSection === "ledgers" ? (
+{currentSection === "ledgers" ? (
                 <>
                   <FormField
                     label="Name"
@@ -298,6 +386,15 @@ const resetForm = () => {
                     value={formData.group || ""}
                     onChange={(e) => setFormData({...formData, group: e.target.value})}
                     options={groups.map(g => ({ value: g.name, label: g.name }))}
+                    required
+                  />
+
+                  <FormField
+                    label="Currency"
+                    type="select"
+                    value={formData.currency || "INR"}
+                    onChange={(e) => setFormData({...formData, currency: e.target.value})}
+                    options={currencies.map(c => ({ value: c.code, label: `${c.code} - ${c.name}` }))}
                     required
                   />
                   
@@ -320,7 +417,7 @@ const resetForm = () => {
                     <label htmlFor="gstApplicable" className="text-sm">GST Applicable</label>
                   </div>
                 </>
-              ) : (
+              ) : currentSection === "groups" ? (
                 <>
                   <FormField
                     label="Name"
@@ -348,8 +445,46 @@ const resetForm = () => {
                     value={formData.parent || ""}
                     onChange={(e) => setFormData({...formData, parent: e.target.value})}
                   />
-</>
-              )}
+                </>
+              ) : currentSection === "currencies" ? (
+                <>
+                  <FormField
+                    label="Currency Code"
+                    value={formData.code || ""}
+                    onChange={(e) => setFormData({...formData, code: e.target.value.toUpperCase()})}
+                    placeholder="USD, EUR, GBP..."
+                    maxLength={3}
+                    required
+                  />
+                  
+                  <FormField
+                    label="Currency Name"
+                    value={formData.name || ""}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    placeholder="US Dollar, Euro..."
+                    required
+                  />
+                  
+                  <FormField
+                    label="Symbol"
+                    value={formData.symbol || ""}
+                    onChange={(e) => setFormData({...formData, symbol: e.target.value})}
+                    placeholder="$, €, £..."
+                    required
+                  />
+                  
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="isActive"
+                      checked={formData.isActive !== false}
+                      onChange={(e) => setFormData({...formData, isActive: e.target.checked})}
+                      className="mr-2"
+                    />
+                    <label htmlFor="isActive" className="text-sm">Active</label>
+</div>
+                </>
+              ) : null}
 
               {/* Custom Fields for Ledgers */}
               {currentSection === "ledgers" && customFields.length > 0 && (

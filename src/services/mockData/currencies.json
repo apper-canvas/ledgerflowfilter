@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "code": "INR",
+    "name": "Indian Rupee",
+    "symbol": "₹",
+    "isBaseCurrency": true,
+    "isActive": true
+  },
+  {
+    "Id": 2,
+    "code": "USD",
+    "name": "US Dollar",
+    "symbol": "$",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 3,
+    "code": "EUR",
+    "name": "Euro",
+    "symbol": "€",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 4,
+    "code": "GBP",
+    "name": "British Pound",
+    "symbol": "£",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 5,
+    "code": "JPY",
+    "name": "Japanese Yen",
+    "symbol": "¥",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 6,
+    "code": "AUD",
+    "name": "Australian Dollar",
+    "symbol": "A$",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 7,
+    "code": "CAD",
+    "name": "Canadian Dollar",
+    "symbol": "C$",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 8,
+    "code": "CHF",
+    "name": "Swiss Franc",
+    "symbol": "CHF",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 9,
+    "code": "CNY",
+    "name": "Chinese Yuan",
+    "symbol": "¥",
+    "isBaseCurrency": false,
+    "isActive": true
+  },
+  {
+    "Id": 10,
+    "code": "SGD",
+    "name": "Singapore Dollar",
+    "symbol": "S$",
+    "isBaseCurrency": false,
+    "isActive": true
+  }
+]
