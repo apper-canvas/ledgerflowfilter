@@ -130,3 +130,24 @@ input:focus, select:focus, textarea:focus, button:focus {
 .clickable-amount:not([onclick]) {
   cursor: default;
 }
+
+/* Statement Matching Styles */
+.statement-match-high {
+  @apply bg-green-100 text-green-800 border-green-200;
+}
+
+.statement-match-medium {
+  @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+}
+
+.statement-match-low {
+  @apply bg-red-100 text-red-800 border-red-200;
+}
+
+.statement-import-drop-zone {
+  @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors;
+}
+
+.statement-import-drop-zone.drag-over {
+  @apply border-primary-500 bg-primary-50;
+}

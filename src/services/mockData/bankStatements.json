@@ -1,0 +1,57 @@
+[
+  {
+    "Id": 1,
+    "ledgerId": 2,
+    "date": "2024-01-15",
+    "description": "Payment received from XYZ Customer",
+    "amount": 11800.00,
+    "balance": 161800.00,
+    "matchStatus": "matched",
+    "matchedVoucherId": 4,
+    "importDate": "2024-01-16"
+  },
+  {
+    "Id": 2,
+    "ledgerId": 2,
+    "date": "2024-01-12",
+    "description": "Office rent payment",
+    "amount": -3000.00,
+    "balance": 147000.00,
+    "matchStatus": "matched", 
+    "matchedVoucherId": 3,
+    "importDate": "2024-01-16"
+  },
+  {
+    "Id": 3,
+    "ledgerId": 2,
+    "date": "2024-01-10",
+    "description": "Payment to ABC Suppliers",
+    "amount": -5900.00,
+    "balance": 144100.00,
+    "matchStatus": "potential",
+    "matchedVoucherId": null,
+    "importDate": "2024-01-16"
+  },
+  {
+    "Id": 4,
+    "ledgerId": 1,
+    "date": "2024-01-18",
+    "description": "ATM Withdrawal",
+    "amount": -2000.00,
+    "balance": 73000.00,
+    "matchStatus": "unmatched",
+    "matchedVoucherId": null,
+    "importDate": "2024-01-19"
+  },
+  {
+    "Id": 5,
+    "ledgerId": 2,
+    "date": "2024-01-20",
+    "description": "Interest Credit",
+    "amount": 450.00,
+    "balance": 162250.00,
+    "matchStatus": "unmatched",
+    "matchedVoucherId": null,
+    "importDate": "2024-01-21"
+  }
+]

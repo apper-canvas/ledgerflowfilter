@@ -27,12 +27,13 @@ const Sidebar = ({ isOpen, onClose }) => {
       label: "Masters", 
       icon: "Database", 
       shortcut: "Alt+M",
-      children: [
-{ path: "/masters/ledgers", label: "Ledgers" },
+children: [
+        { path: "/masters/ledgers", label: "Ledgers" },
         { path: "/masters/groups", label: "Groups" },
         { path: "/masters/custom-fields", label: "Custom Fields" },
         { path: "/masters/cost-centers", label: "Cost Centers" },
-        { path: "/masters/currencies", label: "Currencies" }
+        { path: "/masters/currencies", label: "Currencies" },
+        { path: "/bank-statements", label: "Bank Statements" }
       ]
     },
     { path: "/inventory", label: "Inventory", icon: "Package", shortcut: "Alt+I" },
