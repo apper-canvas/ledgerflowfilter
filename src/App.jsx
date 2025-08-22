@@ -1,16 +1,17 @@
-import React from "react"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import { ToastContainer } from "react-toastify"
-import Layout from "@/components/organisms/Layout"
-import Dashboard from "@/components/pages/Dashboard"
-import VoucherEntry from "@/components/pages/VoucherEntry"
-import Masters from "@/components/pages/Masters"
-import Inventory from "@/components/pages/Inventory"
-import Reports from "@/components/pages/Reports"
-import Settings from "@/components/pages/Settings"
-import CompanySetup from "@/components/pages/CompanySetup"
-import CustomFieldDesigner from "@/components/pages/CustomFieldDesigner"
-import BatchSerialManagement from "@/components/pages/BatchSerialManagement"
+import React from "react";
+import { Route, Router, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import CustomFieldDesigner from "@/components/pages/CustomFieldDesigner";
+import CompanySetup from "@/components/pages/CompanySetup";
+import Inventory from "@/components/pages/Inventory";
+import Settings from "@/components/pages/Settings";
+import VoucherEntry from "@/components/pages/VoucherEntry";
+import VoucherDetails from "@/components/pages/VoucherDetails";
+import Dashboard from "@/components/pages/Dashboard";
+import BatchSerialManagement from "@/components/pages/BatchSerialManagement";
+import Reports from "@/components/pages/Reports";
+import Masters from "@/components/pages/Masters";
+import Layout from "@/components/organisms/Layout";
 
 function App() {
   return (
@@ -26,7 +27,8 @@ function App() {
             <Route path="reports/:type?" element={<Reports />} />
             <Route path="settings" element={<Settings />} />
             <Route path="company-setup" element={<CompanySetup />} />
-            <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
+<Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
+            <Route path="voucher-details/:id" element={<VoucherDetails />} />
           </Route>
         </Routes>
       </Router>

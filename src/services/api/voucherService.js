@@ -52,6 +52,25 @@ const updatedVoucher = { ...voucher, Id: parseInt(id), customFields: voucher.cus
     this.data.splice(index, 1)
     return true
   }
+async getByLedgerAndDate(ledgerId, fromDate, toDate) {
+    await this.delay(200)
+    const filtered = this.data.filter(voucher => {
+      const voucherDate = new Date(voucher.date)
+      const from = new Date(fromDate)
+      const to = new Date(toDate)
+      
+      // Check if voucher date is within range
+      const dateInRange = voucherDate >= from && voucherDate <= to
+      
+      // Check if voucher has entries for the specified ledger
+      const hasLedgerEntry = voucher.entries && 
+        voucher.entries.some(entry => entry.ledgerId === parseInt(ledgerId))
+      
+      return dateInRange && hasLedgerEntry
+    })
+    
+    return filtered.map(voucher => ({ ...voucher }))
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card"
-import Button from "@/components/atoms/Button"
-import FormField from "@/components/molecules/FormField"
-import Loading from "@/components/ui/Loading"
-import Error from "@/components/ui/Error"
-import ApperIcon from "@/components/ApperIcon"
-import voucherService from "@/services/api/voucherService"
-import ledgerService from "@/services/api/ledgerService"
-
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/atoms/Card";
+import VoucherDetails from "@/components/pages/VoucherDetails";
+import ledgerService from "@/services/api/ledgerService";
+import voucherService from "@/services/api/voucherService";
+import ApperIcon from "@/components/ApperIcon";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import FormField from "@/components/molecules/FormField";
+import Button from "@/components/atoms/Button";
 const Reports = () => {
   const { type } = useParams()
   const currentReport = type || "trial-balance"
-  
-  const [data, setData] = useState([])
+const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [showVoucherModal, setShowVoucherModal] = useState(false)
+  const [selectedVouchers, setSelectedVouchers] = useState([])
+  const [modalTitle, setModalTitle] = useState("")
   const [filters, setFilters] = useState({
     fromDate: new Date(new Date().getFullYear(), 3, 1).toISOString().split("T")[0], // Financial year start
     toDate: new Date().toISOString().split("T")[0],
     ledgerId: ""
   })
 
+  const reports = [
   const reports = [
     { key: "trial-balance", label: "Trial Balance", icon: "Scale" },
     { key: "profit-loss", label: "P&L Statement", icon: "TrendingUp" },
@@ -74,12 +77,45 @@ const Reports = () => {
     }
   }
 
+const handleDrillDown = async (ledgerId, ledgerName) => {
+    try {
+      setLoading(true)
+      const vouchers = await voucherService.getByLedgerAndDate(
+        ledgerId, 
+        filters.fromDate, 
+        filters.toDate
+      )
+      setSelectedVouchers(vouchers)
+      setModalTitle(`Vouchers for ${ledgerName}`)
+      setShowVoucherModal(true)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleVoucherDrillDown = async (voucherId) => {
+    try {
+      setLoading(true)
+      const voucher = await voucherService.getById(voucherId)
+      setSelectedVouchers([voucher])
+      setModalTitle(`Voucher Details`)
+      setShowVoucherModal(true)
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const generateTrialBalance = (vouchers, ledgers) => {
     const balances = {}
     
     // Initialize with opening balances
     ledgers.forEach(ledger => {
       balances[ledger.Id] = {
+        id: ledger.Id,
         name: ledger.name,
         group: ledger.group,
         debit: ledger.openingBalance > 0 ? ledger.openingBalance : 0,
@@ -96,6 +132,7 @@ const Reports = () => {
             const ledger = ledgers.find(l => l.Id === ledgerId)
             if (ledger) {
               balances[ledgerId] = {
+                id: ledger.Id,
                 name: ledger.name,
                 group: ledger.group,
                 debit: 0,
@@ -208,12 +245,13 @@ const Reports = () => {
     return transactions
   }
 
-  const generateDayBook = (vouchers) => {
+const generateDayBook = (vouchers) => {
     return vouchers
       .filter(v => new Date(v.date) >= new Date(filters.fromDate) && 
                    new Date(v.date) <= new Date(filters.toDate))
       .sort((a, b) => new Date(a.date) - new Date(b.date))
       .map(voucher => ({
+        id: voucher.Id,
         date: voucher.date,
         type: voucher.type,
         number: voucher.number,
@@ -337,15 +375,21 @@ const Reports = () => {
                         <th className="border border-gray-300 px-4 py-2 text-right">Credit (₹)</th>
                       </tr>
                     </thead>
-                    <tbody>
+<tbody>
                       {data.map((item, index) => (
                         <tr key={index}>
                           <td className="border border-gray-300 px-4 py-2">{item.name}</td>
                           <td className="border border-gray-300 px-4 py-2">{item.group}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-right">
+                          <td 
+                            className="border border-gray-300 px-4 py-2 text-right clickable-amount" 
+                            onClick={() => item.debit > 0 && handleDrillDown(item.id, item.name)}
+                          >
                             {item.debit > 0 ? item.debit.toFixed(2) : "-"}
                           </td>
-                          <td className="border border-gray-300 px-4 py-2 text-right">
+                          <td 
+                            className="border border-gray-300 px-4 py-2 text-right clickable-amount"
+                            onClick={() => item.credit > 0 && handleDrillDown(item.id, item.name)}
+                          >
                             {item.credit > 0 ? item.credit.toFixed(2) : "-"}
                           </td>
                         </tr>
@@ -381,7 +425,7 @@ const Reports = () => {
                         <th className="border border-gray-300 px-4 py-2 text-right">Amount (₹)</th>
                       </tr>
                     </thead>
-                    <tbody>
+<tbody>
                       {data.map((item, index) => (
                         <tr key={index}>
                           <td className="border border-gray-300 px-4 py-2">
@@ -390,7 +434,10 @@ const Reports = () => {
                           <td className="border border-gray-300 px-4 py-2 capitalize">{item.type}</td>
                           <td className="border border-gray-300 px-4 py-2">{item.number}</td>
                           <td className="border border-gray-300 px-4 py-2">{item.narration}</td>
-                          <td className="border border-gray-300 px-4 py-2 text-right">
+                          <td 
+                            className="border border-gray-300 px-4 py-2 text-right clickable-amount"
+                            onClick={() => handleVoucherDrillDown(item.id)}
+                          >
                             {item.amount.toFixed(2)}
                           </td>
                         </tr>
@@ -410,9 +457,18 @@ const Reports = () => {
             </div>
           )}
         </CardContent>
+</CardContent>
       </Card>
+
+      {/* Voucher Details Modal */}
+      {showVoucherModal && (
+        <VoucherDetails
+          vouchers={selectedVouchers}
+          title={modalTitle}
+          onClose={() => setShowVoucherModal(false)}
+        />
+      )}
     </div>
   )
-}
 
 export default Reports
