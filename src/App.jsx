@@ -10,6 +10,7 @@ import Reports from "@/components/pages/Reports"
 import Settings from "@/components/pages/Settings"
 import CompanySetup from "@/components/pages/CompanySetup"
 import CustomFieldDesigner from "@/components/pages/CustomFieldDesigner"
+import BatchSerialManagement from "@/components/pages/BatchSerialManagement"
 
 function App() {
   return (
@@ -21,8 +22,9 @@ function App() {
             <Route path="voucher-entry/:type?" element={<VoucherEntry />} />
             <Route path="masters/:section?" element={<Masters />} />
             <Route path="inventory" element={<Inventory />} />
+            <Route path="inventory/batch-serial" element={<BatchSerialManagement />} />
             <Route path="reports/:type?" element={<Reports />} />
-<Route path="settings" element={<Settings />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="company-setup" element={<CompanySetup />} />
             <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
           </Route>
