@@ -53,6 +53,32 @@ const updatedLedger = { ...ledger, Id: parseInt(id), currency: ledger.currency |
     this.data.splice(index, 1)
     return true
   }
+async getTopByBalance(limit = 10) {
+    await this.delay(150)
+    return [...this.data]
+      .filter(ledger => ledger.currentBalance > 0)
+      .sort((a, b) => b.currentBalance - a.currentBalance)
+      .slice(0, limit)
+      .map(ledger => ({ ...ledger }))
+  }
+
+  async getBalanceSummary() {
+    await this.delay(100)
+    const totalAssets = this.data
+      .filter(l => l.group && l.group.toLowerCase().includes('asset'))
+      .reduce((sum, l) => sum + (l.currentBalance || 0), 0)
+    
+    const totalLiabilities = this.data
+      .filter(l => l.group && l.group.toLowerCase().includes('liabil'))
+      .reduce((sum, l) => sum + (l.currentBalance || 0), 0)
+    
+    return {
+      totalAssets,
+      totalLiabilities,
+      netWorth: totalAssets - totalLiabilities,
+      count: this.data.length
+    }
+  }
 
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

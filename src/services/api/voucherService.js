@@ -72,6 +72,46 @@ async getByLedgerAndDate(ledgerId, fromDate, toDate) {
     return filtered.map(voucher => ({ ...voucher }))
   }
 
+  async getAnalytics() {
+    await this.delay(150)
+    const now = new Date()
+    const currentMonth = now.getMonth()
+    const currentYear = now.getFullYear()
+    
+    // Monthly data for last 6 months
+    const monthlyData = []
+    for (let i = 5; i >= 0; i--) {
+      const month = new Date(currentYear, currentMonth - i, 1)
+      const monthKey = month.toISOString().slice(0, 7)
+      const monthVouchers = this.data.filter(v => 
+        v.date && v.date.startsWith(monthKey)
+      )
+      
+      let revenue = 0
+      let expenses = 0
+      monthVouchers.forEach(voucher => {
+        if (voucher.entries) {
+          voucher.entries.forEach(entry => {
+            if (voucher.type === 'sales' || voucher.type === 'receipt') {
+              revenue += entry.amount || 0
+            } else if (voucher.type === 'purchase' || voucher.type === 'payment') {
+              expenses += entry.amount || 0
+            }
+          })
+        }
+      })
+      
+      monthlyData.push({
+        month: month.toLocaleString('default', { month: 'short', year: 'numeric' }),
+        revenue,
+        expenses,
+        count: monthVouchers.length
+      })
+    }
+    
+    return { monthlyData }
+  }
+
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
