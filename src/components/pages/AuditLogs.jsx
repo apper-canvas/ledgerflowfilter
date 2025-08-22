@@ -144,7 +144,11 @@ const AuditLogs = () => {
     })
   }
 
-  const formatEntityType = (entityType) => {
+const formatEntityType = (entityType) => {
+    if (!entityType || typeof entityType !== 'string') {
+      return 'Unknown'
+    }
+    
     return entityType
       .replace(/([A-Z])/g, ' $1')
       .replace(/^./, str => str.toUpperCase())
