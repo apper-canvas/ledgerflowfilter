@@ -1,0 +1,89 @@
+[
+  {
+    "Id": 1,
+    "title": "System Update Available",
+    "message": "A new system update (v2.1.4) is available with security improvements and bug fixes.",
+    "type": "system",
+    "priority": "medium",
+    "isRead": false,
+    "createdAt": "2024-01-15T10:30:00Z",
+    "category": "System",
+    "actionUrl": "/settings"
+  },
+  {
+    "Id": 2,
+    "title": "Bank Statement Import Failed",
+    "message": "The bank statement import for HDFC Bank account ending in 1234 failed due to format mismatch.",
+    "type": "alert",
+    "priority": "high",
+    "isRead": false,
+    "createdAt": "2024-01-15T09:15:00Z",
+    "category": "Import",
+    "actionUrl": "/bank-statements"
+  },
+  {
+    "Id": 3,
+    "title": "Monthly Reconciliation Due",
+    "message": "Monthly bank reconciliation for December 2023 is pending and due today.",
+    "type": "reminder",
+    "priority": "high",
+    "isRead": true,
+    "createdAt": "2024-01-14T08:00:00Z",
+    "category": "Reconciliation",
+    "actionUrl": "/reports"
+  },
+  {
+    "Id": 4,
+    "title": "New Voucher Entry",
+    "message": "Sales voucher #SV-2024-0045 has been created and is pending approval.",
+    "type": "info",
+    "priority": "low",
+    "isRead": false,
+    "createdAt": "2024-01-14T14:22:00Z",
+    "category": "Vouchers",
+    "actionUrl": "/voucher-details/45"
+  },
+  {
+    "Id": 5,
+    "title": "Exchange Rate Updated",
+    "message": "USD exchange rate has been updated to ₹83.25. Review currency-dependent transactions.",
+    "type": "info",
+    "priority": "medium",
+    "isRead": true,
+    "createdAt": "2024-01-13T16:45:00Z",
+    "category": "Currency",
+    "actionUrl": "/currency-rates"
+  },
+  {
+    "Id": 6,
+    "title": "Low Stock Alert",
+    "message": "Stock item 'Office Supplies - A4 Paper' is running low (5 units remaining).",
+    "type": "alert",
+    "priority": "medium",
+    "isRead": false,
+    "createdAt": "2024-01-13T11:30:00Z",
+    "category": "Inventory",
+    "actionUrl": "/inventory"
+  },
+  {
+    "Id": 7,
+    "title": "Backup Completed Successfully",
+    "message": "Scheduled data backup completed successfully at 2:00 AM. All data is secure.",
+    "type": "system",
+    "priority": "low",
+    "isRead": true,
+    "createdAt": "2024-01-13T02:00:00Z",
+    "category": "Backup"
+  },
+  {
+    "Id": 8,
+    "title": "GST Return Filing Reminder",
+    "message": "GST return for December 2023 is due on 20th January. Prepare filing documents.",
+    "type": "reminder",
+    "priority": "high",
+    "isRead": false,
+    "createdAt": "2024-01-12T18:00:00Z",
+    "category": "Compliance",
+    "actionUrl": "/reports"
+  }
+]

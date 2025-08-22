@@ -13,6 +13,7 @@ import Reports from "@/components/pages/Reports";
 import Masters from "@/components/pages/Masters";
 import CurrencyRateManager from "@/components/pages/CurrencyRateManager";
 import BankStatementImport from "@/components/pages/BankStatementImport";
+import NotificationManager from "@/components/pages/NotificationManager";
 import Layout from "@/components/organisms/Layout";
 
 function App() {
@@ -23,7 +24,7 @@ return (
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="voucher-entry/:type?" element={<VoucherEntry />} />
-            <Route path="masters/:section?" element={<Masters />} />
+<Route path="masters/:section?" element={<Masters />} />
             <Route path="inventory" element={<Inventory />} />
             <Route path="inventory/batch-serial" element={<BatchSerialManagement />} />
             <Route path="reports/:type?" element={<Reports />} />
@@ -31,6 +32,7 @@ return (
             <Route path="company-setup" element={<CompanySetup />} />
 <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
 <Route path="currency-rates" element={<CurrencyRateManager />} />
+            <Route path="notifications" element={<NotificationManager />} />
             <Route path="bank-statements" element={<BankStatementImport />} />
             <Route path="voucher-details/:id" element={<VoucherDetails />} />
 </Route>

@@ -1,7 +1,7 @@
 import React from "react"
 import ApperIcon from "@/components/ApperIcon"
 import Button from "@/components/atoms/Button"
-
+import NotificationCenter from "@/components/molecules/NotificationCenter"
 const Header = ({ onMenuClick }) => {
   const currentDate = new Date().toLocaleDateString("en-IN", {
     weekday: "long",
@@ -41,9 +41,7 @@ const Header = ({ onMenuClick }) => {
             </span>
           </div>
           
-          <Button variant="ghost" size="icon">
-            <ApperIcon name="Bell" className="w-5 h-5" />
-          </Button>
+<NotificationCenter />
           
           <Button variant="ghost" size="icon">
             <ApperIcon name="HelpCircle" className="w-5 h-5" />

@@ -143,11 +143,59 @@ input:focus, select:focus, textarea:focus, button:focus {
 .statement-match-low {
   @apply bg-red-100 text-red-800 border-red-200;
 }
+.statement-match-low {
+  @apply bg-red-100 text-red-800 border-red-200;
+}
 
 .statement-import-drop-zone {
   @apply border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary-400 transition-colors;
 }
 
-.statement-import-drop-zone.drag-over {
-  @apply border-primary-500 bg-primary-50;
+/* Notification Styles */
+.notification-unread {
+  @apply bg-blue-50 border-l-4 border-l-primary-500;
+}
+
+.notification-high-priority {
+  @apply bg-red-50 border-l-4 border-l-red-500;
+}
+
+.notification-alert {
+  @apply bg-red-100 text-red-800 border-red-200;
+}
+
+.notification-reminder {
+  @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+}
+
+.notification-system {
+  @apply bg-blue-100 text-blue-800 border-blue-200;
+}
+
+.notification-info {
+  @apply bg-green-100 text-green-800 border-green-200;
+}
+
+.notification-dropdown {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.notification-badge {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
