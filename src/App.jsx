@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Router, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import CustomFieldDesigner from "@/components/pages/CustomFieldDesigner";
 import CompanySetup from "@/components/pages/CompanySetup";
@@ -14,9 +14,9 @@ import Masters from "@/components/pages/Masters";
 import Layout from "@/components/organisms/Layout";
 
 function App() {
-  return (
+return (
     <>
-      <Router>
+      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
@@ -29,9 +29,9 @@ function App() {
             <Route path="company-setup" element={<CompanySetup />} />
 <Route path="masters/custom-fields" element={<CustomFieldDesigner />} />
             <Route path="voucher-details/:id" element={<VoucherDetails />} />
-          </Route>
+</Route>
         </Routes>
-      </Router>
+      </BrowserRouter>
       <ToastContainer
         position="top-right"
         autoClose={3000}
