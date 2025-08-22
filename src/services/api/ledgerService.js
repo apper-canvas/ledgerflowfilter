@@ -1,6 +1,6 @@
-import auditService from "@/services/api/auditService";
 import React from "react";
 import ledgersData from "@/services/mockData/ledgers.json";
+import auditService from "@/services/api/auditService";
 import Error from "@/components/ui/Error";
 
 class LedgerService {
@@ -104,14 +104,13 @@ async getTopByBalance(limit = 10) {
 
   async getBalanceSummary() {
     await this.delay(100)
-    const totalAssets = this.data
+const totalAssets = this.data
       .filter(l => l.group && l.group.toLowerCase().includes('asset'))
-      .reduce((sum, l) => sum + (l.currentBalance || 0), 0)
+      .reduce((sum, l) => sum + (l.currentBalance ?? 0), 0)
     
     const totalLiabilities = this.data
       .filter(l => l.group && l.group.toLowerCase().includes('liabil'))
-      .reduce((sum, l) => sum + (l.currentBalance || 0), 0)
-    
+      .reduce((sum, l) => sum + (l.currentBalance ?? 0), 0)
     return {
       totalAssets,
       totalLiabilities,
@@ -145,9 +144,9 @@ async search(query, filters = {}) {
     }
     
     if (filters.balanceRange) {
-      const { min, max } = filters.balanceRange
+const { min, max } = filters.balanceRange
       results = results.filter(ledger => {
-        const balance = ledger.currentBalance || 0
+        const balance = ledger.currentBalance ?? 0
         return (!min || balance >= min) && (!max || balance <= max)
       })
     }
@@ -173,9 +172,9 @@ async getFinancialRatios() {
     const liabilities = this.data.filter(l => l.group?.toLowerCase().includes('liabil'))
     const equity = this.data.filter(l => l.group?.toLowerCase().includes('capital') || l.group?.toLowerCase().includes('equity'))
     
-    const totalAssets = assets.reduce((sum, l) => sum + (l.currentBalance || 0), 0)
-    const totalLiabilities = liabilities.reduce((sum, l) => sum + (l.currentBalance || 0), 0)
-    const totalEquity = equity.reduce((sum, l) => sum + (l.currentBalance || 0), 0)
+const totalAssets = assets.reduce((sum, l) => sum + (l.currentBalance ?? 0), 0)
+    const totalLiabilities = liabilities.reduce((sum, l) => sum + (l.currentBalance ?? 0), 0)
+    const totalEquity = equity.reduce((sum, l) => sum + (l.currentBalance ?? 0), 0)
     
     return {
       debtToEquityRatio: totalEquity !== 0 ? totalLiabilities / totalEquity : 0,
@@ -207,12 +206,12 @@ async getFinancialRatios() {
       date.setMonth(date.getMonth() - i)
       const monthKey = date.toISOString().slice(0, 7)
       
-      trends.push({
+trends.push({
         month: date.toLocaleString('default', { month: 'short', year: 'numeric' }),
         ledgers: topLedgers.map(ledger => ({
           id: ledger.Id,
           name: ledger.name,
-          balance: (ledger.currentBalance || 0) * (0.8 + Math.random() * 0.4) // Mock trend variation
+          balance: (ledger.currentBalance ?? 0) * (0.8 + Math.random() * 0.4) // Mock trend variation
         }))
       })
     }

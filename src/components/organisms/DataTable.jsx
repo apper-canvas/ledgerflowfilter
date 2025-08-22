@@ -22,7 +22,7 @@ const DataTable = ({
     if (!searchTerm) return data || []
     
     const searchLower = searchTerm.toLowerCase()
-    return (data || []).filter(row => 
+return (data || []).filter(row => 
       Object.values(row).some(value => 
         value?.toString().toLowerCase().includes(searchLower)
       )
@@ -75,10 +75,10 @@ const exportToCSV = () => {
     const headers = columns.map(col => col.label).join(",")
     csvContent += headers + "\n"
     
-    data.forEach(row => {
+data.forEach(row => {
       const values = columns.map(col => {
         const value = row[col.key]
-        return typeof value === 'string' ? `"${value}"` : (value || '')
+        return typeof value === 'string' ? `"${value}"` : (value ?? '')
       }).join(",")
       csvContent += values + "\n"
     })
@@ -155,9 +155,9 @@ const exportToCSV = () => {
                 {columns.map((column) => (
                   <td
                     key={column.key}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
                   >
-                    {column.render ? column.render(row[column.key], row) : row[column.key]}
+                    {column.render ? column.render(row[column.key], row) : (row[column.key] ?? '')}
                   </td>
                 ))}
                 {(onEdit || onDelete || onView) && (

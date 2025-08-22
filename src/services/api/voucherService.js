@@ -1,6 +1,6 @@
-import auditService from "@/services/api/auditService";
 import React from "react";
 import vouchersData from "@/services/mockData/vouchers.json";
+import auditService from "@/services/api/auditService";
 import Error from "@/components/ui/Error";
 
 class VoucherService {
@@ -20,12 +20,12 @@ class VoucherService {
       throw new Error("Voucher not found")
     }
     return { ...item }
+return { ...item }
   }
 
-async create(voucher) {
+  async create(voucher) {
     await this.delay(400)
     const newId = Math.max(...this.data.map(v => v.Id)) + 1
-    const newVoucher = {
       ...voucher,
       Id: newId,
       status: "posted",
@@ -68,12 +68,12 @@ async create(voucher) {
     )
     
     return { ...updatedVoucher }
+return { ...updatedVoucher }
   }
 
-async delete(id) {
+  async delete(id) {
     await this.delay(300)
     const index = this.data.findIndex(v => v.Id === parseInt(id))
-    if (index === -1) {
       throw new Error("Voucher not found")
     }
     
@@ -129,18 +129,17 @@ async getByLedgerAndDate(ledgerId, fromDate, toDate) {
       
       let revenue = 0
       let expenses = 0
-      monthVouchers.forEach(voucher => {
+monthVouchers.forEach(voucher => {
         if (voucher.entries) {
           voucher.entries.forEach(entry => {
             if (voucher.type === 'sales' || voucher.type === 'receipt') {
-              revenue += entry.amount || 0
+              revenue += (entry.amount ?? 0)
             } else if (voucher.type === 'purchase' || voucher.type === 'payment') {
-              expenses += entry.amount || 0
+              expenses += (entry.amount ?? 0)
             }
           })
         }
       })
-      
       monthlyData.push({
         month: month.toLocaleString('default', { month: 'short', year: 'numeric' }),
         revenue,
@@ -149,9 +148,10 @@ async getByLedgerAndDate(ledgerId, fromDate, toDate) {
       })
     }
     
-    return { monthlyData }
+return { monthlyData }
   }
-async search(query, filters = {}) {
+
+  async search(query, filters = {}) {
     await this.delay(250)
     let results = [...this.data]
     
@@ -184,11 +184,11 @@ async search(query, filters = {}) {
       }
     }
     
-    if (filters.amountRange) {
+if (filters.amountRange) {
       const { min, max } = filters.amountRange
       results = results.filter(voucher => {
         const total = voucher.entries?.reduce((sum, entry) => 
-          sum + (entry.type === "dr" ? entry.amount : 0), 0) || 0
+          sum + (entry.type === "dr" ? (entry.amount ?? 0) : 0), 0) || 0
         return (!min || total >= min) && (!max || total <= max)
       })
     }
@@ -216,9 +216,9 @@ async search(query, filters = {}) {
     return [...this.data]
       .sort((a, b) => new Date(b.date) - new Date(a.date))
       .slice(0, limit)
-  }
+}
 
-async getCashFlowStatement(fromDate, toDate) {
+  async getCashFlowStatement(fromDate, toDate) {
     await this.delay(300)
     const filteredVouchers = this.data.filter(v => {
       const voucherDate = new Date(v.date)
@@ -231,10 +231,10 @@ async getCashFlowStatement(fromDate, toDate) {
     let investingCashFlow = 0
     let financingCashFlow = 0
 
-    filteredVouchers.forEach(voucher => {
+filteredVouchers.forEach(voucher => {
       if (voucher.entries) {
         voucher.entries.forEach(entry => {
-          const amount = entry.amount || 0
+          const amount = entry.amount ?? 0
           if (voucher.type === 'sales' || voucher.type === 'receipt') {
             operatingCashFlow += amount
           } else if (voucher.type === 'purchase' || voucher.type === 'payment') {
@@ -297,14 +297,14 @@ async getCashFlowStatement(fromDate, toDate) {
     const voucherTypeCounts = {}
 
     filteredVouchers.forEach(voucher => {
-      voucherTypeCounts[voucher.type] = (voucherTypeCounts[voucher.type] || 0) + 1
+voucherTypeCounts[voucher.type] = (voucherTypeCounts[voucher.type] || 0) + 1
       
       if (voucher.entries) {
         voucher.entries.forEach(entry => {
           if (voucher.type === 'sales' || voucher.type === 'receipt') {
-            totalRevenue += entry.amount || 0
+            totalRevenue += (entry.amount ?? 0)
           } else if (voucher.type === 'purchase' || voucher.type === 'payment') {
-            totalExpenses += entry.amount || 0
+            totalExpenses += (entry.amount ?? 0)
           }
         })
       }
@@ -331,12 +331,11 @@ async getCashFlowStatement(fromDate, toDate) {
         return voucherDate >= from && voucherDate <= to
       })
     }
-
-    return filteredVouchers
+return filteredVouchers
       .map(voucher => ({
         ...voucher,
         totalAmount: voucher.entries?.reduce((sum, entry) => 
-          sum + (entry.type === "dr" ? entry.amount : 0), 0) || 0
+          sum + (entry.type === "dr" ? (entry.amount ?? 0) : 0), 0) || 0
       }))
       .sort((a, b) => b.totalAmount - a.totalAmount)
       .slice(0, limit)

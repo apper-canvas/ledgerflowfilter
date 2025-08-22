@@ -5,6 +5,7 @@ import ledgerService from "@/services/api/ledgerService";
 import voucherService from "@/services/api/voucherService";
 import ApperIcon from "@/components/ApperIcon";
 import VoucherDetails from "@/components/pages/VoucherDetails";
+import Dashboard from "@/components/pages/Dashboard";
 import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
 import Loading from "@/components/ui/Loading";
@@ -114,9 +115,9 @@ const handleDrillDown = async (ledgerId, ledgerName) => {
       balances[ledger.Id] = {
         id: ledger.Id,
         name: ledger.name,
-        group: ledger.group,
-        debit: ledger.openingBalance > 0 ? ledger.openingBalance : 0,
-        credit: ledger.openingBalance < 0 ? Math.abs(ledger.openingBalance) : 0
+group: ledger.group,
+        debit: (ledger.openingBalance ?? 0) > 0 ? (ledger.openingBalance ?? 0) : 0,
+        credit: (ledger.openingBalance ?? 0) < 0 ? Math.abs(ledger.openingBalance ?? 0) : 0
       }
     })
     
@@ -138,11 +139,11 @@ const handleDrillDown = async (ledgerId, ledgerName) => {
             }
           }
           
-          if (balances[ledgerId]) {
+if (balances[ledgerId]) {
             if (entry.type === "dr") {
-              balances[ledgerId].debit += entry.amount
+              balances[ledgerId].debit += (entry.amount ?? 0)
             } else {
-              balances[ledgerId].credit += entry.amount
+              balances[ledgerId].credit += (entry.amount ?? 0)
             }
           }
         })
@@ -165,12 +166,12 @@ const handleDrillDown = async (ledgerId, ledgerName) => {
     const trialBalance = generateTrialBalance(vouchers, ledgers)
     
     trialBalance.forEach(item => {
-      if (item.group === "Income" || item.group === "Sales") {
+if (item.group === "Income" || item.group === "Sales") {
         incomeExpenses.income.push(item)
-        incomeExpenses.totalIncome += item.credit - item.debit
+        incomeExpenses.totalIncome += (item.credit ?? 0) - (item.debit ?? 0)
       } else if (item.group === "Expenses" || item.group === "Cost of Goods Sold") {
         incomeExpenses.expenses.push(item)
-        incomeExpenses.totalExpenses += item.debit - item.credit
+        incomeExpenses.totalExpenses += (item.debit ?? 0) - (item.credit ?? 0)
       }
     })
     
@@ -188,12 +189,12 @@ const handleDrillDown = async (ledgerId, ledgerName) => {
     const trialBalance = generateTrialBalance(vouchers, ledgers)
     
     trialBalance.forEach(item => {
-      if (item.group === "Assets" || item.group === "Current Assets" || item.group === "Fixed Assets") {
+if (item.group === "Assets" || item.group === "Current Assets" || item.group === "Fixed Assets") {
         balanceSheet.assets.push(item)
-        balanceSheet.totalAssets += item.debit - item.credit
+        balanceSheet.totalAssets += (item.debit ?? 0) - (item.credit ?? 0)
       } else if (item.group === "Liabilities" || item.group === "Current Liabilities" || item.group === "Capital") {
         balanceSheet.liabilities.push(item)
-        balanceSheet.totalLiabilities += item.credit - item.debit
+        balanceSheet.totalLiabilities += (item.credit ?? 0) - (item.debit ?? 0)
       }
     })
     
@@ -223,17 +224,17 @@ const handleDrillDown = async (ledgerId, ledgerName) => {
       .filter(v => new Date(v.date) >= new Date(filters.fromDate) && 
                    new Date(v.date) <= new Date(filters.toDate))
       .forEach(voucher => {
-        const entry = voucher.entries?.find(e => e.ledgerId === parseInt(ledgerId))
+const entry = voucher.entries?.find(e => e.ledgerId === parseInt(ledgerId))
         if (entry) {
-          balance += entry.type === "dr" ? entry.amount : -entry.amount
+          balance += entry.type === "dr" ? (entry.amount ?? 0) : -(entry.amount ?? 0)
           
           transactions.push({
             date: voucher.date,
             particular: voucher.narration || "Transaction",
             voucherType: voucher.type,
             voucherNo: voucher.number,
-            debit: entry.type === "dr" ? entry.amount : 0,
-            credit: entry.type === "cr" ? entry.amount : 0,
+            debit: entry.type === "dr" ? (entry.amount ?? 0) : 0,
+            credit: entry.type === "cr" ? (entry.amount ?? 0) : 0,
             balance: Math.abs(balance)
           })
         }
@@ -247,14 +248,14 @@ const generateDayBook = (vouchers) => {
       .filter(v => new Date(v.date) >= new Date(filters.fromDate) && 
                    new Date(v.date) <= new Date(filters.toDate))
       .sort((a, b) => new Date(a.date) - new Date(b.date))
-      .map(voucher => ({
+.map(voucher => ({
         id: voucher.Id,
         date: voucher.date,
         type: voucher.type,
         number: voucher.number,
         narration: voucher.narration,
         amount: voucher.entries?.reduce((sum, entry) => 
-          sum + (entry.type === "dr" ? entry.amount : 0), 0) || 0
+          sum + (entry.type === "dr" ? (entry.amount ?? 0) : 0), 0) || 0
       }))
   }
 
@@ -380,24 +381,24 @@ const generateDayBook = (vouchers) => {
                           <td 
                             className="border border-gray-300 px-4 py-2 text-right clickable-amount" 
                             onClick={() => item.debit > 0 && handleDrillDown(item.id, item.name)}
-                          >
-                            {item.debit > 0 ? item.debit.toFixed(2) : "-"}
+>
+                            {(item.debit ?? 0) > 0 ? (item.debit ?? 0).toFixed(2) : "-"}
                           </td>
-                          <td 
+                          <td
                             className="border border-gray-300 px-4 py-2 text-right clickable-amount"
-                            onClick={() => item.credit > 0 && handleDrillDown(item.id, item.name)}
+onClick={() => (item.credit ?? 0) > 0 && handleDrillDown(item.id, item.name)}
                           >
-                            {item.credit > 0 ? item.credit.toFixed(2) : "-"}
+                            {(item.credit ?? 0) > 0 ? (item.credit ?? 0).toFixed(2) : "-"}
                           </td>
                         </tr>
                       ))}
                       <tr className="bg-gray-100 font-medium">
-                        <td className="border border-gray-300 px-4 py-2" colSpan={2}>Total</td>
+<td className="border border-gray-300 px-4 py-2" colSpan={2}>Total</td>
                         <td className="border border-gray-300 px-4 py-2 text-right">
-                          {data.reduce((sum, item) => sum + item.debit, 0).toFixed(2)}
+                          {data.reduce((sum, item) => sum + (item.debit ?? 0), 0).toFixed(2)}
                         </td>
                         <td className="border border-gray-300 px-4 py-2 text-right">
-                          {data.reduce((sum, item) => sum + item.credit, 0).toFixed(2)}
+                          {data.reduce((sum, item) => sum + (item.credit ?? 0), 0).toFixed(2)}
                         </td>
                       </tr>
                     </tbody>
@@ -430,12 +431,12 @@ const generateDayBook = (vouchers) => {
                           </td>
                           <td className="border border-gray-300 px-4 py-2 capitalize">{item.type}</td>
                           <td className="border border-gray-300 px-4 py-2">{item.number}</td>
-                          <td className="border border-gray-300 px-4 py-2">{item.narration}</td>
+<td className="border border-gray-300 px-4 py-2">{item.narration}</td>
                           <td 
                             className="border border-gray-300 px-4 py-2 text-right clickable-amount"
                             onClick={() => handleVoucherDrillDown(item.id)}
                           >
-                            {item.amount.toFixed(2)}
+                            {(item.amount ?? 0).toFixed(2)}
                           </td>
                         </tr>
                       ))}
