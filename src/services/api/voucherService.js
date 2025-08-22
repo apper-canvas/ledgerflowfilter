@@ -1,0 +1,60 @@
+import vouchersData from "@/services/mockData/vouchers.json"
+
+class VoucherService {
+  constructor() {
+    this.data = [...vouchersData]
+  }
+
+  async getAll() {
+    await this.delay(300)
+    return [...this.data]
+  }
+
+  async getById(id) {
+    await this.delay(200)
+    const item = this.data.find(v => v.Id === parseInt(id))
+    if (!item) {
+      throw new Error("Voucher not found")
+    }
+    return { ...item }
+  }
+
+  async create(voucher) {
+    await this.delay(400)
+    const newId = Math.max(...this.data.map(v => v.Id)) + 1
+    const newVoucher = {
+      ...voucher,
+      Id: newId,
+      status: "posted"
+    }
+    this.data.push(newVoucher)
+    return { ...newVoucher }
+  }
+
+  async update(id, voucher) {
+    await this.delay(400)
+    const index = this.data.findIndex(v => v.Id === parseInt(id))
+    if (index === -1) {
+      throw new Error("Voucher not found")
+    }
+    const updatedVoucher = { ...voucher, Id: parseInt(id) }
+    this.data[index] = updatedVoucher
+    return { ...updatedVoucher }
+  }
+
+  async delete(id) {
+    await this.delay(300)
+    const index = this.data.findIndex(v => v.Id === parseInt(id))
+    if (index === -1) {
+      throw new Error("Voucher not found")
+    }
+    this.data.splice(index, 1)
+    return true
+  }
+
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+}
+
+export default new VoucherService()

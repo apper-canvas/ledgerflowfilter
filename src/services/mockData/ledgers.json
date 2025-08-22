@@ -1,0 +1,82 @@
+[
+  {
+    "Id": 1,
+    "name": "Cash",
+    "group": "Current Assets",
+    "openingBalance": 50000.00,
+    "currentBalance": 75000.00,
+    "gstApplicable": false
+  },
+  {
+    "Id": 2,
+    "name": "Bank - HDFC Current A/c",
+    "group": "Current Assets",
+    "openingBalance": 100000.00,
+    "currentBalance": 150000.00,
+    "gstApplicable": false
+  },
+  {
+    "Id": 3,
+    "name": "Sales Account",
+    "group": "Income",
+    "openingBalance": 0.00,
+    "currentBalance": -500000.00,
+    "gstApplicable": true
+  },
+  {
+    "Id": 4,
+    "name": "Purchase Account",
+    "group": "Expenses",
+    "openingBalance": 0.00,
+    "currentBalance": 300000.00,
+    "gstApplicable": true
+  },
+  {
+    "Id": 5,
+    "name": "ABC Suppliers",
+    "group": "Current Liabilities",
+    "openingBalance": -25000.00,
+    "currentBalance": -30000.00,
+    "gstApplicable": true
+  },
+  {
+    "Id": 6,
+    "name": "XYZ Customers",
+    "group": "Current Assets",
+    "openingBalance": 35000.00,
+    "currentBalance": 45000.00,
+    "gstApplicable": true
+  },
+  {
+    "Id": 7,
+    "name": "Office Rent",
+    "group": "Expenses",
+    "openingBalance": 0.00,
+    "currentBalance": 36000.00,
+    "gstApplicable": false
+  },
+  {
+    "Id": 8,
+    "name": "CGST Payable",
+    "group": "Current Liabilities",
+    "openingBalance": 0.00,
+    "currentBalance": -15000.00,
+    "gstApplicable": false
+  },
+  {
+    "Id": 9,
+    "name": "SGST Payable",
+    "group": "Current Liabilities",
+    "openingBalance": 0.00,
+    "currentBalance": -15000.00,
+    "gstApplicable": false
+  },
+  {
+    "Id": 10,
+    "name": "Capital Account",
+    "group": "Capital",
+    "openingBalance": -200000.00,
+    "currentBalance": -200000.00,
+    "gstApplicable": false
+  }
+]

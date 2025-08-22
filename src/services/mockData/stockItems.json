@@ -1,0 +1,50 @@
+[
+  {
+    "Id": 1,
+    "name": "Widget A",
+    "unit": "Nos",
+    "hsnCode": "8504901",
+    "gstRate": 18,
+    "openingStock": {
+      "quantity": 100,
+      "rate": 50.00,
+      "value": 5000.00
+    }
+  },
+  {
+    "Id": 2,
+    "name": "Component B", 
+    "unit": "Kg",
+    "hsnCode": "7318159",
+    "gstRate": 18,
+    "openingStock": {
+      "quantity": 50,
+      "rate": 120.00,
+      "value": 6000.00
+    }
+  },
+  {
+    "Id": 3,
+    "name": "Material C",
+    "unit": "Mtr",
+    "hsnCode": "5407520",
+    "gstRate": 12,
+    "openingStock": {
+      "quantity": 200,
+      "rate": 25.00,
+      "value": 5000.00
+    }
+  },
+  {
+    "Id": 4,
+    "name": "Product D",
+    "unit": "Box",
+    "hsnCode": "4819200",
+    "gstRate": 18,
+    "openingStock": {
+      "quantity": 25,
+      "rate": 80.00,
+      "value": 2000.00
+    }
+  }
+]

@@ -1,0 +1,50 @@
+[
+  {
+    "Id": 1,
+    "name": "Current Assets",
+    "nature": "Assets",
+    "parent": "Assets"
+  },
+  {
+    "Id": 2,
+    "name": "Fixed Assets",
+    "nature": "Assets", 
+    "parent": "Assets"
+  },
+  {
+    "Id": 3,
+    "name": "Current Liabilities",
+    "nature": "Liabilities",
+    "parent": "Liabilities"
+  },
+  {
+    "Id": 4,
+    "name": "Long Term Liabilities",
+    "nature": "Liabilities",
+    "parent": "Liabilities"
+  },
+  {
+    "Id": 5,
+    "name": "Capital",
+    "nature": "Liabilities",
+    "parent": "Capital & Reserves"
+  },
+  {
+    "Id": 6,
+    "name": "Income",
+    "nature": "Income",
+    "parent": "Income"
+  },
+  {
+    "Id": 7,
+    "name": "Expenses",
+    "nature": "Expenses",
+    "parent": "Expenses"
+  },
+  {
+    "Id": 8,
+    "name": "Cost of Goods Sold",
+    "nature": "Expenses",
+    "parent": "Expenses"
+  }
+]

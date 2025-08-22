@@ -1,0 +1,138 @@
+[
+  {
+    "Id": 1,
+    "type": "sales",
+    "number": "0001",
+    "date": "2024-01-15",
+    "narration": "Sale of goods to XYZ Customer",
+    "entries": [
+      {
+        "ledgerId": 6,
+        "amount": 11800.00,
+        "type": "dr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 3,
+        "amount": 10000.00,
+        "type": "cr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 8,
+        "amount": 900.00,
+        "type": "cr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 9,
+        "amount": 900.00,
+        "type": "cr",
+        "stockDetails": null
+      }
+    ],
+    "gstDetails": {
+      "cgst": 900.00,
+      "sgst": 900.00,
+      "igst": 0.00,
+      "totalTax": 1800.00
+    },
+    "status": "posted"
+  },
+  {
+    "Id": 2,
+    "type": "purchase",
+    "number": "0001",
+    "date": "2024-01-10",
+    "narration": "Purchase of raw materials from ABC Suppliers",
+    "entries": [
+      {
+        "ledgerId": 4,
+        "amount": 5000.00,
+        "type": "dr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 8,
+        "amount": 450.00,
+        "type": "dr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 9,
+        "amount": 450.00,
+        "type": "dr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 5,
+        "amount": 5900.00,
+        "type": "cr",
+        "stockDetails": null
+      }
+    ],
+    "gstDetails": {
+      "cgst": 450.00,
+      "sgst": 450.00,
+      "igst": 0.00,
+      "totalTax": 900.00
+    },
+    "status": "posted"
+  },
+  {
+    "Id": 3,
+    "type": "payment",
+    "number": "0001",
+    "date": "2024-01-12",
+    "narration": "Office rent payment for January",
+    "entries": [
+      {
+        "ledgerId": 7,
+        "amount": 3000.00,
+        "type": "dr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 1,
+        "amount": 3000.00,
+        "type": "cr",
+        "stockDetails": null
+      }
+    ],
+    "gstDetails": {
+      "cgst": 0.00,
+      "sgst": 0.00,
+      "igst": 0.00,
+      "totalTax": 0.00
+    },
+    "status": "posted"
+  },
+  {
+    "Id": 4,
+    "type": "receipt",
+    "number": "0001",
+    "date": "2024-01-20",
+    "narration": "Payment received from XYZ Customer",
+    "entries": [
+      {
+        "ledgerId": 2,
+        "amount": 11800.00,
+        "type": "dr",
+        "stockDetails": null
+      },
+      {
+        "ledgerId": 6,
+        "amount": 11800.00,
+        "type": "cr",
+        "stockDetails": null
+      }
+    ],
+    "gstDetails": {
+      "cgst": 0.00,
+      "sgst": 0.00,
+      "igst": 0.00,
+      "totalTax": 0.00
+    },
+    "status": "posted"
+  }
+]

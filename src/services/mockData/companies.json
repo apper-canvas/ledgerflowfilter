@@ -1,0 +1,17 @@
+[
+  {
+    "Id": 1,
+    "name": "Acme Enterprises Ltd.",
+    "gstin": "27ABCDE1234F1Z5",
+    "address": {
+      "line1": "123 Business Street",
+      "line2": "Commercial District",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400001"
+    },
+    "financialYearStart": "2024-04-01",
+    "baseCurrency": "INR",
+    "businessType": "trading"
+  }
+]
